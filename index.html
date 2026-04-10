@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Financeiro 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --text:#f0ede8;--text2:#9a9690;--text3:#5a5753;
+  --green:#4ade80;--green2:#16a34a;--green-bg:rgba(74,222,128,0.1);
+  --red:#f87171;--red2:#dc2626;--red-bg:rgba(248,113,113,0.1);
+  --amber:#fbbf24;--amber-bg:rgba(251,191,36,0.1);
+  --blue:#60a5fa;--purple:#a78bfa;
+  --nav-h:56px;--bot-h:64px;
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overscroll-behavior:none;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
+
+/* ── LOGIN ─────────────────────────────── */
+#login-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.login-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.login-bg-c{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.13;}
+.login-box{position:relative;width:100%;max-width:360px;padding:0 24px;animation:lFade .5s ease;}
+@keyframes lFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.login-logo{text-align:center;margin-bottom:36px;}
+.login-logo .ytag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--text3);border:1px solid var(--border2);padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.login-logo h1{font-family:'DM Serif Display',serif;font-size:30px;font-weight:400;}
+.login-logo p{font-size:12px;color:var(--text3);margin-top:4px;}
+.login-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px 24px;}
+.lf{margin-bottom:14px;}
+.lf label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;}
+.lf input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:12px 14px;font-size:15px;font-family:'Sora',sans-serif;outline:none;}
+.lf input.err{border-color:var(--red2);}
+.login-btn{width:100%;background:var(--text);color:var(--bg);border:none;border-radius:var(--rs);padding:14px;font-size:15px;font-family:'Sora',sans-serif;font-weight:600;cursor:pointer;margin-top:6px;}
+.login-err{display:none;text-align:center;font-size:12px;color:var(--red);margin-top:12px;padding:10px;background:var(--red-bg);border-radius:var(--rs);}
+.login-err.show{display:block;}
+.login-shake{animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+#login-screen.hide{animation:lOut .35s ease forwards;}
+@keyframes lOut{to{opacity:0;transform:scale(1.03);pointer-events:none}}
+
+/* ── APP SHELL ─────────────────────────── */
+#app{display:none;flex-direction:column;min-height:100vh;}
+
+/* TOP BAR */
+.topbar{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--nav-h);
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  z-index:100;
+}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;}
+.topbar-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.12em;}
+
+/* BOTTOM NAV */
+.botnav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--bot-h);
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  display:flex;
+  z-index:100;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.botnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;cursor:pointer;border:none;background:none;
+  color:var(--text3);font-size:10px;font-family:'Sora',sans-serif;
+  padding:8px 0;transition:color .15s;
+}
+.botnav-item.active{color:var(--green);}
+.botnav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.botnav-item.active svg{stroke:var(--green);}
+
+/* CONTENT AREA */
+.content{
+  margin-top:var(--nav-h);
+  margin-bottom:var(--bot-h);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  min-height:calc(100vh - var(--nav-h) - var(--bot-h));
+}
+.page{display:none;padding:16px;}
+.page.active{display:block;}
+
+/* PAGE HEADER */
+.ph{margin-bottom:20px;}
+.ph .lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--text3);text-transform:uppercase;margin-bottom:4px;}
+.ph h2{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;}
+.ph p{color:var(--text2);font-size:12px;margin-top:3px;}
+
+/* METRIC CARDS */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.metric-lbl{font-size:10px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em;}
+.metric-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--text);font-weight:500;}
+.metric-sub{font-size:10px;margin-top:4px;}
+.up{color:var(--green);}
+.down{color:var(--red);}
+.muted{color:var(--text3);}
+
+/* CHART CARDS */
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.cc-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.cc-sub{font-size:10px;color:var(--text3);margin-bottom:12px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+.legend span{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2);}
+.leg{width:7px;height:7px;border-radius:2px;display:inline-block;}
+
+/* HIGHLIGHTS */
+.highlight{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border-left:3px solid var(--border2);}
+.highlight.green{border-left-color:var(--green2);}
+.highlight.red{border-left-color:var(--red2);}
+.highlight.amber{border-left-color:var(--amber);}
+.hl-label{font-size:10px;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+.hl-text{font-size:12px;color:var(--text2);line-height:1.5;}
+.hl-text strong{color:var(--text);font-weight:500;}
+
+/* INV TABLE */
+.inv-table-wrap{border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;}
+.inv-table{width:100%;border-collapse:collapse;}
+.inv-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);}
+.inv-table td{padding:10px 12px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);}
+.inv-table td:first-child{color:var(--text);}
+.inv-table td.mono{font-family:'DM Mono',monospace;font-size:11px;}
+.inv-table tr:last-child td{color:var(--text);font-weight:500;}
+.pbar-wrap{background:var(--bg3);border-radius:4px;height:3px;width:70px;overflow:hidden;}
+.pbar{height:100%;border-radius:4px;}
+
+/* LANCAMENTOS */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.fsel{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:7px 24px 7px 9px;font-size:11px;font-family:'Sora',sans-serif;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a5753'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;outline:none;flex:1;min-width:90px;}
+.fsearch{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:7px 9px;font-size:11px;font-family:'Sora',sans-serif;outline:none;width:100%;}
+.fsearch::placeholder{color:var(--text3);}
+.sumbar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.si label{font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:block;margin-bottom:1px;}
+.si span{font-family:'DM Mono',monospace;font-size:11px;}
+.mbadge{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:10px;color:var(--text2);margin-bottom:10px;}
+.mdot{width:6px;height:6px;border-radius:50%;}
+.mdot.real{background:var(--green);}
+.mdot.prev{background:var(--amber);}
+
+/* LANC TABLE */
+.lt-wrap{border-radius:var(--r);border:1px solid var(--border);overflow:hidden;}
+.lt{width:100%;border-collapse:collapse;}
+.lt th{background:var(--bg3);padding:6px 8px;text-align:left;font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);}
+.lt td{padding:6px 8px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);}
+.lt tr:hover td{background:var(--bg3);}
+.lt td.dt{font-family:'DM Mono',monospace;color:var(--text3);font-size:9px;white-space:nowrap;}
+.lt td.mot{color:var(--text);font-size:10px;}
+.lt td.val{font-family:'DM Mono',monospace;font-size:9px;text-align:right;white-space:nowrap;}
+.tag-r{background:var(--green-bg);color:var(--green);padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;}
+.tag-d{background:var(--red-bg);color:var(--red);padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;}
+.tag-f{background:var(--bg3);color:var(--text3);padding:1px 5px;border-radius:3px;font-size:8px;}
+.mes-hl{margin-top:20px;}
+.mes-hl-title{font-size:10px;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:10px;}
+
+/* CALENDAR */
+.cal-ctrl{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.cal-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text2);padding:8px 14px;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer;}
+.cal-btn.av{background:var(--bg3);color:var(--text);border-color:var(--text3);}
+.cal-msel{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);padding:8px 26px 8px 10px;font-size:12px;font-family:'Sora',sans-serif;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a5753'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;outline:none;flex:1;}
+.cal-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.cl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2);}
+.cl-dot{width:7px;height:7px;border-radius:2px;}
+
+.mo-list{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;min-width:260px;}
+.mo-list-hdr{background:var(--bg3);padding:10px 14px;display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--border2);}
+.mo-list-row{display:grid;grid-template-columns:32px 80px 1fr;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);}
+.mo-list-row:last-child{border-bottom:none;}
+.mo-list-row.wk{background:rgba(255,255,255,0.015);}
+.mo-list-row.hev{background:rgba(74,222,128,0.03);}
+.mo-list-dn{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+.mo-list-wd{font-size:11px;}
+.mo-list-ev{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mo-list-ev.ferias{color:#60a5fa;}
+.mo-list-ev.sexta{color:#a78bfa;}
+.mo-list-ev.social{color:#4ade80;}
+.mo-list-ev.viagem{color:#f97316;}
+.mo-list-ev.trabalho{color:#f87171;}
+.mo-list-ev.outro{color:#fbbf24;}
+
+/* Year grid - scrollable horizontal */
+.yr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.yr-grid{display:grid;grid-template-columns:repeat(12,minmax(80px,1fr));border:1px solid var(--border);border-radius:var(--r);overflow:hidden;min-width:960px;}
+.yr-mhdr{background:var(--bg3);padding:8px 6px;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border2);}
+.yr-mhdr:last-child{border-right:none;}
+.yr-mn{font-family:'DM Serif Display',serif;font-size:11px;color:var(--text);display:block;}
+.yr-mt{font-family:'DM Mono',monospace;font-size:8px;color:var(--text3);}
+.yr-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:3px 5px;min-height:36px;}
+.yr-cell:last-child{border-right:none;}
+.yr-cell.wk{background:rgba(255,255,255,0.015);}
+.yr-cell.hev{background:rgba(74,222,128,0.03);}
+.yr-cell.emp{opacity:.2;background:var(--bg);}
+.yr-dn{font-family:'DM Mono',monospace;font-size:8px;display:block;}
+.yr-wd{font-size:7px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.yr-ev{display:block;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.yr-ev.ferias{color:#60a5fa;}
+.yr-ev.sexta{color:#a78bfa;}
+.yr-ev.social{color:#4ade80;}
+.yr-ev.viagem{color:#f97316;}
+.yr-ev.trabalho{color:#f87171;}
+.yr-ev.outro{color:#fbbf24;}
+
+/* Month grid */
+.mo-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.mo-whdr{padding:7px 3px;text-align:center;font-size:9px;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em;}
+.mo-whdr:last-child{border-right:none;}
+.mo-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px 7px;min-height:64px;}
+.mo-cell:nth-child(7n){border-right:none;}
+.mo-cell.other{opacity:.2;}
+.mo-cell.wk-cell{background:rgba(255,255,255,0.015);}
+.mo-dn{font-family:'DM Mono',monospace;font-size:11px;margin-bottom:3px;}
+.mo-pill{display:block;font-size:9px;padding:2px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mo-pill.ferias{background:rgba(96,165,250,.15);color:#60a5fa;}
+.mo-pill.sexta{background:rgba(167,139,250,.15);color:#a78bfa;}
+.mo-pill.social{background:rgba(74,222,128,.15);color:#4ade80;}
+.mo-pill.viagem{background:rgba(249,115,22,.15);color:#f97316;}
+.mo-pill.trabalho{background:rgba(248,113,113,.15);color:#f87171;}
+.mo-pill.outro{background:rgba(251,191,36,.15);color:#fbbf24;}
+
+
+/* ── OBJETIVOS ─────────────────────────── */
+.obj-section{margin-bottom:24px;}
+.obj-section-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.obj-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.obj-section-title{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);}
+.obj-section-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.obj-cards{display:flex;flex-direction:column;gap:8px;}
+.obj-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;border-left:3px solid var(--border2);}
+.obj-card:has(.tag-done){border-left-color:var(--green2);}
+.obj-card:has(.tag-progress){border-left-color:var(--amber);}
+.obj-card:has(.tag-cancelled){border-left-color:var(--red2);}
+.obj-card:has(.tag-pending){border-left-color:var(--text3);}
+.obj-card-tag{display:inline-block;font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-bottom:5px;}
+.tag-done{background:var(--green-bg);color:var(--green);}
+.tag-progress{background:var(--amber-bg);color:var(--amber);}
+.tag-cancelled{background:var(--red-bg);color:var(--red);}
+.tag-pending{background:rgba(90,87,83,0.2);color:var(--text3);}
+.obj-card-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.obj-card-how{font-size:10px;color:var(--text2);line-height:1.5;}
+
+/* plan/feitos tables */
+.plan-table-wrap{border-radius:var(--r);border:1px solid var(--border);overflow:hidden;}
+.plan-table{width:100%;border-collapse:collapse;}
+.plan-table th{background:var(--bg3);padding:6px 8px;text-align:left;font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);}
+.plan-table td{padding:6px 8px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);}
+.plan-table td:first-child{color:var(--text);}
+.plan-table tr.plan-total td{color:var(--text);font-weight:600;border-top:2px solid var(--border2);background:var(--bg3);}
+.pval{font-family:'DM Mono',monospace;font-size:10px;text-align:right;white-space:nowrap;color:var(--text);}
+.pctr{text-align:center;font-size:11px;color:var(--green);}
+.pctr.pno{color:var(--red);}
+.pdev{font-family:'DM Mono',monospace;font-size:10px;text-align:right;white-space:nowrap;color:var(--amber);}
+.pdev.pok{color:var(--text3);}
+.red{color:var(--red) !important;}
+.amber{color:var(--amber) !important;}
+
+.stag{display:inline-block;font-size:8px;font-weight:600;padding:1px 5px;border-radius:3px;vertical-align:middle;margin-left:2px;}
+.stag-pago{background:var(--green-bg);color:var(--green);}
+.stag-agendado{background:var(--blue-bg);color:var(--blue);}
+.stag-prev{background:var(--amber-bg);color:var(--amber);}
+
+
+/* ── FATURA MODAL ───────────────────────── */
+#fi-overlay{position:fixed;inset:0;z-index:9000;}
+.fi-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;padding:0;}
+.fi-modal{background:var(--bg2);border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;animation:fiSlide 0.3s ease;}
+@keyframes fiSlide{from{transform:translateY(100%)}to{transform:none}}
+.fi-modal-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 16px 12px;border-bottom:1px solid var(--border);}
+.fi-modal-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);}
+.fi-modal-sub{font-size:10px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace;}
+.fi-close{background:var(--bg3);border:none;color:var(--text2);font-size:14px;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fi-total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.fi-total-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;}
+.fi-total-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--red);}
+.fi-cats{overflow-y:auto;flex:1;padding:8px 0;}
+.fi-cat{border-bottom:1px solid var(--border);}
+.fi-cat-header{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;}
+.fi-cat-icon{font-size:16px;flex-shrink:0;}
+.fi-cat-nome{font-size:12px;color:var(--text);flex:1;}
+.fi-cat-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.fi-cat-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);}
+.fi-cat-pct{font-size:10px;color:var(--text3);background:var(--bg3);padding:1px 5px;border-radius:4px;}
+.fi-chevron{font-size:16px;color:var(--text3);transition:transform 0.2s;display:inline-block;}
+.fi-bar-wrap{height:3px;background:var(--bg3);margin:0 16px 4px;}
+.fi-bar{height:100%;border-radius:2px;transition:width 0.4s ease;}
+.fi-items{display:none;padding:4px 16px 10px;}
+.fi-cat.open .fi-items{display:block;}
+.fi-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
+.fi-item:last-child{border-bottom:none;}
+.fi-item-desc{font-size:11px;color:var(--text2);}
+.fi-item-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);white-space:nowrap;margin-left:8px;}
+.fatura-link{color:var(--blue);cursor:pointer;text-decoration:underline;font-size:10px;display:inline-block;margin-top:2px;}
+.fatura-link:hover{color:var(--text);}
+
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-bg">
+    <div class="login-bg-c" style="width:400px;height:400px;background:#4ade80;top:-120px;right:-80px;"></div>
+    <div class="login-bg-c" style="width:350px;height:350px;background:#a78bfa;bottom:-80px;left:-60px;"></div>
+    <div class="login-bg-c" style="width:280px;height:280px;background:#fbbf24;top:45%;left:50%;transform:translate(-50%,-50%);"></div>
+  </div>
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="ytag">2026</div>
+      <h1>Financeiro</h1>
+      <p>Controle financeiro familiar</p>
+    </div>
+    <div class="login-card" id="lcard">
+      <div class="lf">
+        <label>Login</label>
+        <input type="text" id="inp-login" placeholder="seu login" autocomplete="username" inputmode="text" onkeydown="if(event.key==='Enter')document.getElementById('inp-senha').focus()">
+      </div>
+      <div class="lf">
+        <label>Senha</label>
+        <input type="password" id="inp-senha" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" onclick="doLogin()">Entrar</button>
+      <div class="login-err" id="login-err">Login ou senha incorretos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-sub">2026</div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="metrics">
+        <div class="metric"><div class="metric-lbl">Saldo Atual</div><div class="metric-val" style="font-size:16px">R$ 18.364</div><div class="metric-sub down">▼ R$ 8.524 abr</div></div>
+        <div class="metric"><div class="metric-lbl">Projeção Dez</div><div class="metric-val" style="font-size:16px">R$ 43.710</div><div class="metric-sub up">▲ +R$ 25.346</div></div>
+        <div class="metric"><div class="metric-lbl">Investimentos</div><div class="metric-val" style="font-size:16px">R$ 120.096</div><div class="metric-sub muted">dez/2026</div></div>
+        <div class="metric"><div class="metric-lbl">Patrimônio</div><div class="metric-val" style="font-size:16px">R$ 163.806</div><div class="metric-sub up">saldo+inv</div></div>
+        <div class="metric"><div class="metric-lbl">Receita Anual</div><div class="metric-val" style="font-size:16px">R$ 420.700</div><div class="metric-sub muted">projeção</div></div>
+        <div class="metric"><div class="metric-lbl">Despesa Anual</div><div class="metric-val" style="font-size:16px">R$ 376.990</div><div class="metric-sub muted">projeção</div></div>
+      </div>
+
+      <div class="highlight green"><div class="hl-label">Destaque — Março</div><div class="hl-text"><strong>PPR Nstech R$ 56.832</strong> permitiu aportes de R$ 40.500 nos cofres (Uni, Prev, 15y).</div></div>
+      <div class="highlight red"><div class="hl-label">Alerta — Fevereiro</div><div class="hl-text">Pior mês: <strong>déficit R$ 13.484</strong>. Cartões R$ 23.302 + pintura Prius R$ 3.000.</div></div>
+      <div class="highlight amber"><div class="hl-label">Atenção — Novembro</div><div class="hl-text">13º Nstech+Purpurata = R$ 19.500. Aportes <strong>R$ 21.500 nos cofres</strong> previstos.</div></div>
+
+      <div class="chart-card">
+        <div class="cc-title">Saldo mensal</div>
+        <div class="cc-sub">Realizado (verde) · Previsto (âmbar)</div>
+        <div class="legend"><span><span class="leg" style="background:#4ade80"></span>Realizado</span><span><span class="leg" style="background:#fbbf24"></span>Previsto</span></div>
+        <div style="position:relative;width:100%;height:200px"><canvas id="saldoChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Resultado mensal</div>
+        <div class="cc-sub">Positivo = sobra · Negativo = déficit</div>
+        <div style="position:relative;width:100%;height:180px"><canvas id="resultChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Receita vs Despesa</div>
+        <div class="cc-sub">Comparativo mensal</div>
+        <div class="legend"><span><span class="leg" style="background:#60a5fa"></span>Receita</span><span><span class="leg" style="background:#f87171"></span>Despesa</span></div>
+        <div style="position:relative;width:100%;height:180px"><canvas id="recDespChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-title">Investimentos acumulados</div>
+        <div class="cc-sub">Composição dos cofres</div>
+        <div class="legend">
+          <span><span class="leg" style="background:#a78bfa"></span>Fin.Caixa</span>
+          <span><span class="leg" style="background:#4ade80"></span>VGBL</span>
+          <span><span class="leg" style="background:#60a5fa"></span>Uni</span>
+          <span><span class="leg" style="background:#f87171"></span>Prev</span>
+          <span><span class="leg" style="background:#fbbf24"></span>15y</span>
+        </div>
+        <div style="position:relative;width:100%;height:200px"><canvas id="invChart"></canvas></div>
+      </div>
+
+      <div class="inv-table-wrap">
+        <table class="inv-table">
+          <thead><tr><th>Investimento</th><th>Valor</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>Cofre Uni</td><td class="mono up">R$ 60.000</td><td class="mono">50%</td></tr>
+            <tr><td>Cofre Prev</td><td class="mono up">R$ 30.000</td><td class="mono">25%</td></tr>
+            <tr><td>Finan. Caixa</td><td class="mono">R$ 18.596</td><td class="mono">15,5%</td></tr>
+            <tr><td>Cofre 15y</td><td class="mono">R$ 10.000</td><td class="mono">8,3%</td></tr>
+            <tr><td>VGBL Sarah</td><td class="mono">R$ 1.500</td><td class="mono">1,2%</td></tr>
+            <tr><td>Total</td><td class="mono up">R$ 120.096</td><td class="mono">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALENDÁRIO -->
+    <div class="page" id="page-calendario">
+      <div class="cal-ctrl">
+        <button class="cal-btn av" id="btn-year" onclick="setCalView('year')">Ano</button>
+        <button class="cal-btn" id="btn-month" onclick="setCalView('month')">Mês</button>
+        <select class="cal-msel" id="cal-msel" onchange="setCalMonth(parseInt(this.value))" style="display:none">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+          <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+          <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div class="cal-legend">
+        <div class="cl-item"><div class="cl-dot" style="background:#60a5fa"></div>Férias</div>
+        <div class="cl-item"><div class="cl-dot" style="background:#a78bfa"></div>Sexta a Dois</div>
+        <div class="cl-item"><div class="cl-dot" style="background:#4ade80"></div>Social</div>
+        <div class="cl-item"><div class="cl-dot" style="background:#f97316"></div>Viagem</div>
+        <div class="cl-item"><div class="cl-dot" style="background:#f87171"></div>Trabalho</div>
+        <div class="cl-item"><div class="cl-dot" style="background:#fbbf24"></div>Outros</div>
+      </div>
+      <div id="cal-output"></div>
+    </div>
+
+    <!-- LANÇAMENTOS -->
+    <div class="page" id="page-lanc">
+      <div class="filters">
+        <select class="fsel" id="filter-mes" onchange="setMes(this.value)">
+          <option value="jan">Janeiro</option><option value="fev">Fevereiro</option><option value="mar">Março</option>
+          <option value="abr">Abril</option><option value="mai">Maio</option><option value="jun">Junho</option>
+          <option value="jul">Julho</option><option value="ago">Agosto</option><option value="set">Setembro</option>
+          <option value="out">Outubro</option><option value="nov">Novembro</option><option value="dez">Dezembro</option>
+        </select>
+        <select class="fsel" id="filter-tipo" onchange="renderLanc()">
+          <option value="">Todos</option><option value="receita">Receita</option><option value="despesa">Despesa</option>
+        </select>
+        <select class="fsel" id="filter-forma" onchange="renderLanc()">
+          <option value="">Todas formas</option><option value="conta">Conta</option><option value="cartão">Cartão</option><option value="boleto">Boleto</option><option value="pix">Pix</option>
+        </select>
+        <select class="fsel" id="filter-status" onchange="renderLanc()">
+          <option value="">Todos status</option><option value="Pago">Pago</option><option value="Agendado">Agendado</option><option value="Previsto">Previsto</option>
+        </select>
+        <input class="fsearch" type="search" id="filter-search" placeholder="Buscar motivo..." oninput="renderLanc()">
+      </div>
+      <div class="sumbar" id="sumbar"></div>
+      <div id="mbadge"></div>
+      <div class="lt-wrap"><table class="lt" onclick="handleFatClick(event)">
+        <thead><tr><th>Data</th><th>Motivo</th><th style="text-align:right">Valor</th><th style="text-align:right">Saldo</th></tr></thead>
+        <tbody id="lanc-body"></tbody>
+      </table></div>
+      <div id="mes-hl"></div>
+    </div>
+
+
+    <!-- OBJETIVOS -->
+    <div class="page" id="page-objetivos">
+
+      <!-- BLOCO 1: Objetivos 5 anos -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">🎯</span>
+          <div>
+            <div class="obj-section-title">Objetivos de 5 Anos</div>
+            <div class="obj-section-sub">Visão de longo prazo — até 2030</div>
+          </div>
+        </div>
+        <div class="obj-cards">
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Festa 15 anos Sarah</div>
+            <div class="obj-card-how">Cofre — guardar R$ 30.000 até 2030</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Aposentadoria JZ e AZ</div>
+            <div class="obj-card-how">Renda fixa e imóveis — R$ 1,5M até 2042</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Faculdade Sarah</div>
+            <div class="obj-card-how">Cofre e VGBL — R$ 500.000 até 2033</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Férias anuais internacionais</div>
+            <div class="obj-card-how">EUA, Europa, Caribe, Ásia — períodos de 15 dias</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Cidadania Italiana</div>
+            <div class="obj-card-how">Documentação — requerimento e execução</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Finalizar casa e documentações</div>
+            <div class="obj-card-how">Melhorias estruturais e averbação</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Bem estar</div>
+            <div class="obj-card-how">Seios, cabelo, dentes, orelha, olheira — academia, corridas e eventos</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Melhorar dia a dia Ale</div>
+            <div class="obj-card-how">Nova empregada por mais tempo semanal</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Atualizar carros</div>
+            <div class="obj-card-how">Trocar Tiguan e Prius até 2029 (trocas em 2026 e 2028)</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-pending">Em planejamento</div>
+            <div class="obj-card-title">Apartamento SP</div>
+            <div class="obj-card-how">Financiamento e FGTS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 2: Objetivos 2026 -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">📋</span>
+          <div>
+            <div class="obj-section-title">Objetivos 2026</div>
+            <div class="obj-section-sub">Metas do ano em andamento</div>
+          </div>
+        </div>
+        <div class="obj-cards">
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Em andamento</div>
+            <div class="obj-card-title">Festa 15 anos Sarah</div>
+            <div class="obj-card-how">Cofre — guardar R$ 500/mês a partir de 2026</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Em andamento</div>
+            <div class="obj-card-title">Aposentadoria JZ e AZ</div>
+            <div class="obj-card-how">Renda fixa — R$ 2.000/mês, aumentar gradativamente</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Em andamento</div>
+            <div class="obj-card-title">Faculdade Sarah</div>
+            <div class="obj-card-how">Cofre e VGBL — guardar R$ 40.000 em 2026, manter VGBL R$ 300/mês</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-cancelled">Cancelado</div>
+            <div class="obj-card-title">Trocar carro JZ</div>
+            <div class="obj-card-how">Financiamento — trocar Tiguan ou Prius</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-cancelled">Cancelado / Revisado</div>
+            <div class="obj-card-title">Bem estar — Cirurgias</div>
+            <div class="obj-card-how">Seios Alessandra cancelado — orçamento para dentes e orelha JZ</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-done">90% executado</div>
+            <div class="obj-card-title">Finalizar casa e documentações</div>
+            <div class="obj-card-how">Orçado — aquisição de eletros e móveis</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-done">Concluído</div>
+            <div class="obj-card-title">Férias fora do país</div>
+            <div class="obj-card-how">EUA concluído ✓ — Itália ou RJ planejado</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-done">Concluído</div>
+            <div class="obj-card-title">Melhorar dia a dia Ale</div>
+            <div class="obj-card-how">Nova empregada contratada por mais tempo semanal</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Falta planejar</div>
+            <div class="obj-card-title">Bem estar — Comemorações</div>
+            <div class="obj-card-how">Aniversários orçados — execução pendente</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Em ajuste</div>
+            <div class="obj-card-title">Bem estar — Treinos</div>
+            <div class="obj-card-how">Academia, corridas e eventos — ajustes para convergir com inglês</div>
+          </div>
+          <div class="obj-card">
+            <div class="obj-card-tag tag-progress">Em andamento</div>
+            <div class="obj-card-title">Cidadania Italiana</div>
+            <div class="obj-card-how">Documentação Sarah e Alessandra — iniciando processo jurídico</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 3: Planejado para 2026 -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">📅</span>
+          <div>
+            <div class="obj-section-title">Planejado para 2026</div>
+            <div class="obj-section-sub">Total previsto: <strong style="color:var(--amber)">R$ 35.500</strong></div>
+          </div>
+        </div>
+        <div class="plan-table-wrap">
+          <table class="plan-table">
+            <thead><tr><th>Item</th><th style="text-align:right">Valor</th></tr></thead>
+            <tbody>
+              <tr><td>Implante Capilar JZ</td><td class="pval">R$ 10.000</td></tr>
+              <tr><td>Dentistas Ale e Sarah</td><td class="pval">R$ 1.000</td></tr>
+              <tr><td>Alisar Cabelo Ale</td><td class="pval">R$ 500</td></tr>
+              <tr><td>Guarda Roupas Sarah</td><td class="pval">R$ 10.000</td></tr>
+              <tr><td>Férias 2027</td><td class="pval">R$ 14.000</td></tr>
+              <tr class="plan-total"><td>Total</td><td class="pval amber">R$ 35.500</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BLOCO 4: Feitos 2026 -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">✅</span>
+          <div>
+            <div class="obj-section-title">Feitos 2026</div>
+            <div class="obj-section-sub">Total: <strong style="color:var(--red)">R$ 143.210</strong> · Desvio: <strong style="color:var(--amber)">R$ 45.680</strong></div>
+          </div>
+        </div>
+        <div class="plan-table-wrap">
+          <table class="plan-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th style="text-align:right">Valor</th>
+                <th style="text-align:center">Orçado</th>
+                <th style="text-align:right">Desvio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Pedra Lavanderia</td><td class="pval">R$ 3.700</td><td class="pctr">✓</td><td class="pdev">R$ 700</td></tr>
+              <tr><td>Máquina Lavar</td><td class="pval">R$ 3.750</td><td class="pctr pno">✗</td><td class="pdev">R$ 3.750</td></tr>
+              <tr><td>Máquina Secar</td><td class="pval">R$ 2.340</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Geladeira</td><td class="pval">R$ 3.400</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Forno</td><td class="pval">R$ 950</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Móveis Cozinha e Lav.</td><td class="pval">R$ 10.250</td><td class="pctr">✓</td><td class="pdev">R$ 950</td></tr>
+              <tr><td>Mesa Centro</td><td class="pval">R$ 390</td><td class="pctr pno">✗</td><td class="pdev">R$ 390</td></tr>
+              <tr><td>Aula Inglês</td><td class="pval">R$ 6.000</td><td class="pctr pno">✗</td><td class="pdev">R$ 6.000</td></tr>
+              <tr><td>Bancada Quartzito</td><td class="pval">R$ 14.000</td><td class="pctr">✓</td><td class="pdev">R$ 7.000</td></tr>
+              <tr><td>Dentes Jonattam</td><td class="pval">R$ 10.800</td><td class="pctr pno">✗</td><td class="pdev">R$ 10.800</td></tr>
+              <tr><td>Férias 2026</td><td class="pval">R$ 52.000</td><td class="pctr">✓</td><td class="pdev">R$ 9.000</td></tr>
+              <tr><td>Ar Condicionado Escrit.</td><td class="pval">R$ 1.080</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Ombrelone</td><td class="pval">R$ 3.114</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Banheira</td><td class="pval">R$ 8.440</td><td class="pctr">✓</td><td class="pdev pok">—</td></tr>
+              <tr><td>Conserto Prius</td><td class="pval">R$ 7.250</td><td class="pctr">✓</td><td class="pdev">R$ 3.250</td></tr>
+              <tr><td>Celular</td><td class="pval">R$ 1.826</td><td class="pctr pno">✗</td><td class="pdev pok">—</td></tr>
+              <tr><td>Diarista</td><td class="pval">R$ 13.920</td><td class="pctr">✓</td><td class="pdev">R$ 3.840</td></tr>
+              <tr class="plan-total">
+                <td>Total</td>
+                <td class="pval red">R$ 143.210</td>
+                <td class="pctr"></td>
+                <td class="pdev amber">R$ 45.680</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-objetivos -->
+
+  </div><!-- /content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="botnav">
+    <button class="botnav-item active" id="nav-dash" onclick="showPage('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="botnav-item" id="nav-cal" onclick="showPage('calendario')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Calendário
+    </button>
+    <button class="botnav-item" id="nav-lanc" onclick="showPage('lanc')">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Lançamentos
+    </button>
+    <button class="botnav-item" id="nav-obj" onclick="showPage('objetivos')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      Objetivos
+    </button>
+  </nav>
+
+</div><!-- /app -->
+
+<script>
+// -- LOGIN ------------------------------------------
+function doLogin(){
+  var l=document.getElementById('inp-login').value.trim();
+  var s=document.getElementById('inp-senha').value;
+  var err=document.getElementById('login-err');
+  var card=document.getElementById('lcard');
+  if(l==='cazal20'&&s==='qwe220308'){
+    err.classList.remove('show');
+    var ls=document.getElementById('login-screen');
+    ls.classList.add('hide');
+    setTimeout(function(){
+      ls.style.display='none';
+      document.getElementById('app').style.display='flex';
+      document.getElementById('app').style.flexDirection='column';
+      buildCharts();
+    },350);
+  } else {
+    err.classList.add('show');
+    card.classList.remove('login-shake');
+    void card.offsetWidth;
+    card.classList.add('login-shake');
+    document.getElementById('inp-senha').value='';
+    document.getElementById('inp-login').classList.add('err');
+    document.getElementById('inp-senha').classList.add('err');
+    setTimeout(function(){
+      document.getElementById('inp-login').classList.remove('err');
+      document.getElementById('inp-senha').classList.remove('err');
+    },1200);
+  }
+}
+
+// -- NAV ------------------------------------------
+var pageNames={dashboard:'Dashboard',calendario:'Calendário',lanc:'Lançamentos',objetivos:'Objetivos 2026'};
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('page-'+p).classList.add('active');
+  ['dash','cal','lanc','obj'].forEach(function(id){
+    document.getElementById('nav-'+id).classList.remove('active');
+  });
+  var map={dashboard:'dash',calendario:'cal',lanc:'lanc',objetivos:'obj'};
+  if(map[p]) document.getElementById('nav-'+map[p]).classList.add('active');
+  document.getElementById('topbar-title').textContent=pageNames[p];
+  if(p==='calendario') renderCalendar();
+  // scroll to top
+  document.querySelector('.content').scrollTop=0;
+}
+
+// -- CALENDAR --------------------------------------
+var calView='year';
+var calMonth=0;
+var CAL_MONTHS=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+var CAL_SHORT=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+var DAYS_IN_MONTH=[31,28,31,30,31,30,31,31,30,31,30,31];
+var WD_SHORT=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+
+var rawCal=[
+  {m:0,d:1,w:"Qui",e:""},{m:0,d:2,w:"Sex",e:""},{m:0,d:3,w:"Sáb",e:""},{m:0,d:4,w:"Dom",e:""},
+  {m:0,d:5,w:"Seg",e:""},{m:0,d:6,w:"Ter",e:""},{m:0,d:7,w:"Qua",e:""},{m:0,d:8,w:"Qui",e:""},
+  {m:0,d:9,w:"Sex",e:"Sexta a Dois ❦"},{m:0,d:10,w:"Sáb",e:"Enseada"},{m:0,d:11,w:"Dom",e:"Enseada"},
+  {m:0,d:12,w:"Seg",e:""},{m:0,d:13,w:"Ter",e:"Igreja"},{m:0,d:14,w:"Qua",e:""},
+  {m:0,d:15,w:"Qui",e:"Corrida"},{m:0,d:16,w:"Sex",e:""},{m:0,d:17,w:"Sáb",e:"Férias"},
+  {m:0,d:18,w:"Dom",e:"Férias"},{m:0,d:19,w:"Seg",e:"Férias"},{m:0,d:20,w:"Ter",e:"Férias"},
+  {m:0,d:21,w:"Qua",e:"Férias"},{m:0,d:22,w:"Qui",e:"Férias"},{m:0,d:23,w:"Sex",e:"Férias"},
+  {m:0,d:24,w:"Sáb",e:"Férias"},{m:0,d:25,w:"Dom",e:"Férias"},{m:0,d:26,w:"Seg",e:""},
+  {m:0,d:27,w:"Ter",e:"Igreja"},{m:0,d:28,w:"Qua",e:""},{m:0,d:29,w:"Qui",e:"Corrida"},
+  {m:0,d:30,w:"Sex",e:""},{m:0,d:31,w:"Sáb",e:"Férias"},
+  {m:1,d:1,w:"Dom",e:"Férias"},{m:1,d:2,w:"Seg",e:"Férias"},{m:1,d:3,w:"Ter",e:"Férias"},
+  {m:1,d:4,w:"Qua",e:"Férias"},{m:1,d:5,w:"Qui",e:"Férias"},{m:1,d:6,w:"Sex",e:"Férias"},
+  {m:1,d:7,w:"Sáb",e:"Férias"},{m:1,d:8,w:"Dom",e:"Férias"},{m:1,d:9,w:"Seg",e:"Férias"},
+  {m:1,d:10,w:"Ter",e:"Férias"},{m:1,d:11,w:"Qua",e:"Férias"},{m:1,d:12,w:"Qui",e:"Férias"},
+  {m:1,d:13,w:"Sex",e:"Férias"},{m:1,d:14,w:"Sáb",e:"Férias"},{m:1,d:15,w:"Dom",e:"Férias"},
+  {m:1,d:16,w:"Seg",e:"Férias"},{m:1,d:17,w:"Ter",e:"Férias"},{m:1,d:18,w:"Qua",e:""},
+  {m:1,d:19,w:"Qui",e:""},{m:1,d:20,w:"Sex",e:"Sexta a Dois ❦"},{m:1,d:21,w:"Sáb",e:"Churras"},
+  {m:1,d:22,w:"Dom",e:""},{m:1,d:23,w:"Seg",e:""},{m:1,d:24,w:"Ter",e:"Igreja"},
+  {m:1,d:25,w:"Qua",e:""},{m:1,d:26,w:"Qui",e:"Corrida"},{m:1,d:27,w:"Sex",e:""},
+  {m:1,d:28,w:"Sáb",e:"Enseada"},
+  {m:2,d:1,w:"Dom",e:"Churras"},{m:2,d:2,w:"Seg",e:""},{m:2,d:3,w:"Ter",e:""},
+  {m:2,d:4,w:"Qua",e:""},{m:2,d:5,w:"Qui",e:""},{m:2,d:6,w:"Sex",e:""},
+  {m:2,d:7,w:"Sáb",e:"Trabalho"},{m:2,d:8,w:"Dom",e:"Compromisso JZ"},{m:2,d:9,w:"Seg",e:"Brusqueta Formiga"},
+  {m:2,d:10,w:"Ter",e:"Aniv. Miguel"},{m:2,d:11,w:"Qua",e:"Dentista/Unimed"},
+  {m:2,d:12,w:"Qui",e:"Corrida e Churras"},{m:2,d:13,w:"Sex",e:"Aniv. Nicolas"},
+  {m:2,d:14,w:"Sáb",e:"Aniv. Lorenzo"},{m:2,d:15,w:"Dom",e:"Visitar Aline"},
+  {m:2,d:16,w:"Seg",e:""},{m:2,d:17,w:"Ter",e:""},{m:2,d:18,w:"Qua",e:""},
+  {m:2,d:19,w:"Qui",e:"Aniv. Francisco"},{m:2,d:20,w:"Sex",e:"Beach Tênis"},
+  {m:2,d:21,w:"Sáb",e:"Beach Tênis"},{m:2,d:22,w:"Dom",e:"Trabalho"},
+  {m:2,d:23,w:"Seg",e:""},{m:2,d:24,w:"Ter",e:""},{m:2,d:25,w:"Qua",e:""},
+  {m:2,d:26,w:"Qui",e:""},{m:2,d:27,w:"Sex",e:""},{m:2,d:28,w:"Sáb",e:"Caranguejo Bianca"},
+  {m:2,d:29,w:"Dom",e:""},{m:2,d:30,w:"Seg",e:""},{m:2,d:31,w:"Ter",e:""},
+  {m:3,d:1,w:"Qua",e:""},{m:3,d:2,w:"Qui",e:""},{m:3,d:3,w:"Sex",e:"Beach Tênis"},
+  {m:3,d:4,w:"Sáb",e:"Churras Claudia"},{m:3,d:5,w:"Dom",e:"Páscoa Família"},
+  {m:3,d:6,w:"Seg",e:""},{m:3,d:7,w:"Ter",e:""},{m:3,d:8,w:"Qua",e:""},
+  {m:3,d:9,w:"Qui",e:""},{m:3,d:10,w:"Sex",e:""},{m:3,d:11,w:"Sáb",e:"Stammtisch"},
+  {m:3,d:12,w:"Dom",e:""},{m:3,d:13,w:"Seg",e:"Niver Isis"},{m:3,d:14,w:"Ter",e:""},
+  {m:3,d:15,w:"Qua",e:""},{m:3,d:16,w:"Qui",e:""},{m:3,d:17,w:"Sex",e:"Sexta a Dois ❦"},
+  {m:3,d:18,w:"Sáb",e:"Sarah c/ Amiga"},{m:3,d:19,w:"Dom",e:""},
+  {m:3,d:20,w:"Seg",e:""},{m:3,d:21,w:"Ter",e:"Niver Gael"},{m:3,d:22,w:"Qua",e:""},
+  {m:3,d:23,w:"Qui",e:""},{m:3,d:24,w:"Sex",e:"Sexta a Dois ❦"},{m:3,d:25,w:"Sáb",e:""},
+  {m:3,d:26,w:"Dom",e:""},{m:3,d:27,w:"Seg",e:""},{m:3,d:28,w:"Ter",e:""},
+  {m:3,d:29,w:"Qua",e:""},{m:3,d:30,w:"Qui",e:""},
+  {m:4,d:1,w:"Sex",e:""},{m:4,d:2,w:"Sáb",e:""},{m:4,d:3,w:"Dom",e:""},
+  {m:4,d:4,w:"Seg",e:""},{m:4,d:5,w:"Ter",e:""},{m:4,d:6,w:"Qua",e:""},
+  {m:4,d:7,w:"Qui",e:""},{m:4,d:8,w:"Sex",e:""},{m:4,d:9,w:"Sáb",e:""},
+  {m:4,d:10,w:"Dom",e:"Dia das Mães"},{m:4,d:11,w:"Seg",e:""},{m:4,d:12,w:"Ter",e:""},
+  {m:4,d:13,w:"Qua",e:""},{m:4,d:14,w:"Qui",e:""},{m:4,d:15,w:"Sex",e:"Sexta a Dois ❦"},
+  {m:4,d:16,w:"Sáb",e:"Churras"},{m:4,d:17,w:"Dom",e:""},{m:4,d:18,w:"Seg",e:""},
+  {m:4,d:19,w:"Ter",e:""},{m:4,d:20,w:"Qua",e:""},{m:4,d:21,w:"Qui",e:""},
+  {m:4,d:22,w:"Sex",e:""},{m:4,d:23,w:"Sáb",e:""},{m:4,d:24,w:"Dom",e:""},
+  {m:4,d:25,w:"Seg",e:""},{m:4,d:26,w:"Ter",e:""},{m:4,d:27,w:"Qua",e:""},
+  {m:4,d:28,w:"Qui",e:""},{m:4,d:29,w:"Sex",e:""},{m:4,d:30,w:"Sáb",e:""},
+  {m:4,d:31,w:"Dom",e:""},
+  {m:5,d:1,w:"Seg",e:""},{m:5,d:2,w:"Ter",e:""},{m:5,d:3,w:"Qua",e:""},
+  {m:5,d:4,w:"Qui",e:""},{m:5,d:5,w:"Sex",e:"Tentar Folga"},{m:5,d:6,w:"Sáb",e:"Sexta a Dois ❦"},
+  {m:5,d:7,w:"Dom",e:""},{m:5,d:8,w:"Seg",e:""},{m:5,d:9,w:"Ter",e:""},
+  {m:5,d:10,w:"Qua",e:""},{m:5,d:11,w:"Qui",e:""},{m:5,d:12,w:"Sex",e:"Sexta a Dois ❦"},
+  {m:5,d:13,w:"Sáb",e:"Noite Pijama"},{m:5,d:14,w:"Dom",e:"Noite Pijama"},{m:5,d:15,w:"Seg",e:""},
+  {m:5,d:16,w:"Ter",e:""},{m:5,d:17,w:"Qua",e:""},{m:5,d:18,w:"Qui",e:""},
+  {m:5,d:19,w:"Sex",e:"Sexta a Dois ❦"},{m:5,d:20,w:"Sáb",e:""},{m:5,d:21,w:"Dom",e:""},
+  {m:5,d:22,w:"Seg",e:""},{m:5,d:23,w:"Ter",e:""},{m:5,d:24,w:"Qua",e:""},
+  {m:5,d:25,w:"Qui",e:""},{m:5,d:26,w:"Sex",e:""},{m:5,d:27,w:"Sáb",e:""},
+  {m:5,d:28,w:"Dom",e:""},{m:5,d:29,w:"Seg",e:""},{m:5,d:30,w:"Ter",e:"Aniversário Sarah"},
+  {m:6,d:1,w:"Qua",e:""},{m:6,d:2,w:"Qui",e:""},{m:6,d:3,w:"Sex",e:""},
+  {m:6,d:4,w:"Sáb",e:""},{m:6,d:5,w:"Dom",e:""},{m:6,d:6,w:"Seg",e:""},
+  {m:6,d:7,w:"Ter",e:""},{m:6,d:8,w:"Qua",e:""},{m:6,d:9,w:"Qui",e:""},
+  {m:6,d:10,w:"Sex",e:"Sexta a Dois ❦"},{m:6,d:11,w:"Sáb",e:""},{m:6,d:12,w:"Dom",e:""},
+  {m:6,d:13,w:"Seg",e:""},{m:6,d:14,w:"Ter",e:""},{m:6,d:15,w:"Qua",e:""},
+  {m:6,d:16,w:"Qui",e:""},{m:6,d:17,w:"Sex",e:""},{m:6,d:18,w:"Sáb",e:""},
+  {m:6,d:19,w:"Dom",e:"Dia dos Pais"},{m:6,d:20,w:"Seg",e:""},{m:6,d:21,w:"Ter",e:""},
+  {m:6,d:22,w:"Qua",e:""},{m:6,d:23,w:"Qui",e:""},{m:6,d:24,w:"Sex",e:""},
+  {m:6,d:25,w:"Sáb",e:""},{m:6,d:26,w:"Dom",e:""},{m:6,d:27,w:"Seg",e:""},
+  {m:6,d:28,w:"Ter",e:""},{m:6,d:29,w:"Qua",e:""},{m:6,d:30,w:"Qui",e:""},
+  {m:6,d:31,w:"Sex",e:""},
+  {m:7,d:1,w:"Sáb",e:""},{m:7,d:2,w:"Dom",e:""},{m:7,d:3,w:"Seg",e:""},
+  {m:7,d:4,w:"Ter",e:""},{m:7,d:5,w:"Qua",e:""},{m:7,d:6,w:"Qui",e:""},
+  {m:7,d:7,w:"Sex",e:"Sexta a Dois ❦"},{m:7,d:8,w:"Sáb",e:""},{m:7,d:9,w:"Dom",e:"Dia dos Pais"},
+  {m:7,d:10,w:"Seg",e:""},{m:7,d:11,w:"Ter",e:""},{m:7,d:12,w:"Qua",e:""},
+  {m:7,d:13,w:"Qui",e:""},{m:7,d:14,w:"Sex",e:""},{m:7,d:15,w:"Sáb",e:""},
+  {m:7,d:16,w:"Dom",e:""},{m:7,d:17,w:"Seg",e:""},{m:7,d:18,w:"Ter",e:"Sexta a Dois ❦"},
+  {m:7,d:19,w:"Qua",e:""},{m:7,d:20,w:"Qui",e:""},{m:7,d:21,w:"Sex",e:""},
+  {m:7,d:22,w:"Sáb",e:""},{m:7,d:23,w:"Dom",e:""},{m:7,d:24,w:"Seg",e:""},
+  {m:7,d:25,w:"Ter",e:""},{m:7,d:26,w:"Qua",e:""},{m:7,d:27,w:"Qui",e:""},
+  {m:7,d:28,w:"Sex",e:""},{m:7,d:29,w:"Sáb",e:""},{m:7,d:30,w:"Dom",e:""},
+  {m:7,d:31,w:"Seg",e:""},
+  {m:8,d:1,w:"Ter",e:""},{m:8,d:2,w:"Qua",e:""},{m:8,d:3,w:"Qui",e:""},
+  {m:8,d:4,w:"Sex",e:""},{m:8,d:5,w:"Sáb",e:"Enseada"},{m:8,d:6,w:"Dom",e:"Enseada"},
+  {m:8,d:7,w:"Seg",e:""},{m:8,d:8,w:"Ter",e:""},{m:8,d:9,w:"Qua",e:""},
+  {m:8,d:10,w:"Qui",e:""},{m:8,d:11,w:"Sex",e:"Sexta a Dois ❦"},{m:8,d:12,w:"Sáb",e:""},
+  {m:8,d:13,w:"Dom",e:""},{m:8,d:14,w:"Seg",e:""},{m:8,d:15,w:"Ter",e:""},
+  {m:8,d:16,w:"Qua",e:""},{m:8,d:17,w:"Qui",e:""},{m:8,d:18,w:"Sex",e:"Sexta a Dois ❦"},
+  {m:8,d:19,w:"Sáb",e:""},{m:8,d:20,w:"Dom",e:""},{m:8,d:21,w:"Seg",e:""},
+  {m:8,d:22,w:"Ter",e:""},{m:8,d:23,w:"Qua",e:""},{m:8,d:24,w:"Qui",e:"Foz do Iguaçu"},
+  {m:8,d:25,w:"Sex",e:"Foz do Iguaçu"},{m:8,d:26,w:"Sáb",e:"Foz do Iguaçu"},{m:8,d:27,w:"Dom",e:"Foz do Iguaçu"},
+  {m:8,d:28,w:"Seg",e:""},{m:8,d:29,w:"Ter",e:""},{m:8,d:30,w:"Qua",e:""},
+  {m:9,d:1,w:"Qui",e:""},{m:9,d:2,w:"Sex",e:"Sexta a Dois ❦"},{m:9,d:3,w:"Sáb",e:""},
+  {m:9,d:4,w:"Dom",e:""},{m:9,d:5,w:"Seg",e:""},{m:9,d:6,w:"Ter",e:""},
+  {m:9,d:7,w:"Qua",e:""},{m:9,d:8,w:"Qui",e:""},{m:9,d:9,w:"Sex",e:""},
+  {m:9,d:10,w:"Sáb",e:"Rio de Janeiro"},{m:9,d:11,w:"Dom",e:"Rio de Janeiro"},{m:9,d:12,w:"Seg",e:"Rio de Janeiro"},
+  {m:9,d:13,w:"Ter",e:"Rio de Janeiro"},{m:9,d:14,w:"Qua",e:"Rio de Janeiro"},{m:9,d:15,w:"Qui",e:"Rio de Janeiro"},
+  {m:9,d:16,w:"Sex",e:"Rio de Janeiro"},{m:9,d:17,w:"Sáb",e:""},{m:9,d:18,w:"Dom",e:""},
+  {m:9,d:19,w:"Seg",e:""},{m:9,d:20,w:"Ter",e:""},{m:9,d:21,w:"Qua",e:""},
+  {m:9,d:22,w:"Qui",e:""},{m:9,d:23,w:"Sex",e:""},{m:9,d:24,w:"Sáb",e:""},
+  {m:9,d:25,w:"Dom",e:""},{m:9,d:26,w:"Seg",e:""},{m:9,d:27,w:"Ter",e:""},
+  {m:9,d:28,w:"Qua",e:""},{m:9,d:29,w:"Qui",e:""},{m:9,d:30,w:"Sex",e:""},
+  {m:9,d:31,w:"Sáb",e:""},
+  {m:10,d:1,w:"Dom",e:""},{m:10,d:2,w:"Seg",e:""},{m:10,d:3,w:"Ter",e:""},
+  {m:10,d:4,w:"Qua",e:""},{m:10,d:5,w:"Qui",e:""},{m:10,d:6,w:"Sex",e:"Sexta a Dois ❦"},
+  {m:10,d:7,w:"Sáb",e:""},{m:10,d:8,w:"Dom",e:""},{m:10,d:9,w:"Seg",e:""},
+  {m:10,d:10,w:"Ter",e:""},{m:10,d:11,w:"Qua",e:"Sexta a Dois ❦"},{m:10,d:12,w:"Qui",e:""},
+  {m:10,d:13,w:"Sex",e:"Noite Pijama"},{m:10,d:14,w:"Sáb",e:"Noite Pijama"},{m:10,d:15,w:"Dom",e:""},
+  {m:10,d:16,w:"Seg",e:""},{m:10,d:17,w:"Ter",e:""},{m:10,d:18,w:"Qua",e:""},
+  {m:10,d:19,w:"Qui",e:""},{m:10,d:20,w:"Sex",e:""},{m:10,d:21,w:"Sáb",e:"Enseada"},
+  {m:10,d:22,w:"Dom",e:"Enseada"},{m:10,d:23,w:"Seg",e:""},{m:10,d:24,w:"Ter",e:""},
+  {m:10,d:25,w:"Qua",e:""},{m:10,d:26,w:"Qui",e:""},{m:10,d:27,w:"Sex",e:""},
+  {m:10,d:28,w:"Sáb",e:"BRAVES"},{m:10,d:29,w:"Dom",e:""},{m:10,d:30,w:"Seg",e:""},
+  {m:11,d:1,w:"Ter",e:""},{m:11,d:2,w:"Qua",e:""},{m:11,d:3,w:"Qui",e:""},
+  {m:11,d:4,w:"Sex",e:""},{m:11,d:5,w:"Sáb",e:"Enseada"},{m:11,d:6,w:"Dom",e:"Enseada"},
+  {m:11,d:7,w:"Seg",e:""},{m:11,d:8,w:"Ter",e:""},{m:11,d:9,w:"Qua",e:""},
+  {m:11,d:10,w:"Qui",e:""},{m:11,d:11,w:"Sex",e:"Sexta a Dois ❦"},{m:11,d:12,w:"Sáb",e:""},
+  {m:11,d:13,w:"Dom",e:""},{m:11,d:14,w:"Seg",e:""},{m:11,d:15,w:"Ter",e:""},
+  {m:11,d:16,w:"Qua",e:""},{m:11,d:17,w:"Qui",e:""},{m:11,d:18,w:"Sex",e:""},
+  {m:11,d:19,w:"Sáb",e:""},{m:11,d:20,w:"Dom",e:""},{m:11,d:21,w:"Seg",e:""},
+  {m:11,d:22,w:"Ter",e:""},{m:11,d:23,w:"Qua",e:""},{m:11,d:24,w:"Qui",e:""},
+  {m:11,d:25,w:"Sex",e:""},{m:11,d:26,w:"Sáb",e:""},{m:11,d:27,w:"Dom",e:""},
+  {m:11,d:28,w:"Seg",e:""},{m:11,d:29,w:"Ter",e:""},{m:11,d:30,w:"Qua",e:""},
+  {m:11,d:31,w:"Qui",e:""}
+];
+
+function evClass(e){
+  if(!e) return '';
+  var el=e.toLowerCase();
+  if(el.indexOf('férias')>=0) return 'ferias';
+  if(el.indexOf('sexta a dois')>=0) return 'sexta';
+  if(el.indexOf('rio')>=0||el.indexOf('foz')>=0||el.indexOf('enseada')>=0||el.indexOf('braves')>=0) return 'viagem';
+  if(el.indexOf('trabalho')>=0) return 'trabalho';
+  if(el.indexOf('aniv')>=0||el.indexOf('churras')>=0||el.indexOf('pijama')>=0||
+     el.indexOf('páscoa')>=0||el.indexOf('stammtisch')>=0||el.indexOf('brusqueta')>=0||
+     el.indexOf('caranguejo')>=0||el.indexOf('beach')>=0||el.indexOf('corrida')>=0||
+     el.indexOf('igreja')>=0||el.indexOf('mães')>=0||el.indexOf('pais')>=0||
+     el.indexOf('noite')>=0||el.indexOf('sarah')>=0||el.indexOf('niver')>=0||
+     el.indexOf('visitar')>=0||el.indexOf('folga')>=0) return 'social';
+  return 'outro';
+}
+function isWk(w){return w==='Sáb'||w==='Dom';}
+
+function buildLookup(){
+  var lk={};
+  for(var i=0;i<rawCal.length;i++){var r=rawCal[i];lk[r.m+'-'+r.d]=r;}
+  return lk;
+}
+
+function renderCalendar(){
+  if(calView==='year') renderYearView();
+  else renderMonthView();
+}
+
+function setCalView(v){
+  calView=v;
+  document.getElementById('btn-year').classList.toggle('av',v==='year');
+  document.getElementById('btn-month').classList.toggle('av',v==='month');
+  document.getElementById('cal-msel').style.display=v==='month'?'':'none';
+  renderCalendar();
+}
+
+function setCalMonth(m){calMonth=m;renderCalendar();}
+
+function renderYearView(){
+  var lk=buildLookup();
+  var html='<div class="yr-wrap"><div class="yr-grid">';
+  for(var m=0;m<12;m++){
+    html+='<div class="yr-mhdr"><span class="yr-mn">'+CAL_MONTHS[m]+'</span><span class="yr-mt">'+CAL_SHORT[m]+'</span></div>';
+  }
+  for(var d=1;d<=31;d++){
+    for(var m=0;m<12;m++){
+      if(d>DAYS_IN_MONTH[m]){html+='<div class="yr-cell emp"></div>';continue;}
+      var info=lk[m+'-'+d]||{w:'',e:''};
+      var wk=isWk(info.w);
+      var ev=info.e||'';
+      var ec=evClass(ev);
+      var cls='yr-cell'+(wk?' wk':'')+(ev?' hev':'');
+      html+='<div class="'+cls+'">';
+      html+='<span class="yr-dn" style="color:'+(wk?'var(--amber)':'var(--text3)')+'">'+d+'</span>';
+      html+='<span class="yr-wd">'+info.w+'</span>';
+      if(ev) html+='<span class="yr-ev '+ec+'">'+ev+'</span>';
+      html+='</div>';
+    }
+  }
+  html+='</div></div>';
+  document.getElementById('cal-output').innerHTML=html;
+}
+
+function renderMonthView(){
+  var m=calMonth;
+  var lk=buildLookup();
+  var days=DAYS_IN_MONTH[m];
+  // Vertical list style matching year view but for a single month
+  var html='<div class="yr-wrap"><div class="mo-list">';
+  // Header
+  html+='<div class="mo-list-hdr"><span class="yr-mn">'+CAL_MONTHS[m]+'</span><span class="yr-mt">2026</span></div>';
+  for(var d=1;d<=days;d++){
+    var info=lk[m+'-'+d]||{w:'',e:''};
+    var wk=isWk(info.w);
+    var ev=info.e||'';
+    var ec=evClass(ev);
+    var cls='mo-list-row'+(wk?' wk':'')+(ev?' hev':'');
+    html+='<div class="'+cls+'">';
+    html+='<span class="mo-list-dn" style="color:'+(wk?'var(--amber)':'var(--text3)')+'">'+d+'</span>';
+    html+='<span class="mo-list-wd" style="color:'+(wk?'var(--amber)':'var(--text3)')+'">'+info.w+'</span>';
+    if(ev) html+='<span class="mo-list-ev '+ec+'">'+ev+'</span>';
+    html+='</div>';
+  }
+  html+='</div></div>';
+  document.getElementById('cal-output').innerHTML=html;
+}
+
+// -- DATA ------------------------------------------
+var mesesInfo={
+  jan:{nome:'Janeiro',realizado:true,receita:75718,despesa:44150.84,saldo:31567.17,resultado:31567.17},
+  fev:{nome:'Fevereiro',realizado:true,receita:28492,despesa:41976.12,saldo:18083.05,resultado:-13484.12},
+  mar:{nome:'Março',realizado:true,receita:97268,despesa:88463.46,saldo:26887.59,resultado:8804.54},
+  abr:{nome:'Abril',realizado:false,receita:39200,despesa:47724.03,saldo:18363.56,resultado:-8524.03},
+  mai:{nome:'Maio',realizado:false,receita:37700,despesa:34788,saldo:21275.56,resultado:2912},
+  jun:{nome:'Junho',realizado:false,receita:35700,despesa:34538,saldo:22437.56,resultado:1162},
+  jul:{nome:'Julho',realizado:false,receita:35700,despesa:33388,saldo:24749.56,resultado:2312},
+  ago:{nome:'Agosto',realizado:false,receita:35700,despesa:32188,saldo:28261.56,resultado:3512},
+  set:{nome:'Setembro',realizado:false,receita:35700,despesa:30238,saldo:33723.56,resultado:5462},
+  out:{nome:'Outubro',realizado:false,receita:35700,despesa:32288,saldo:37135.56,resultado:3412},
+  nov:{nome:'Novembro',realizado:false,receita:58200,despesa:55088,saldo:40247.56,resultado:3112},
+  dez:{nome:'Dezembro',realizado:false,receita:47200,despesa:43738,saldo:43709.56,resultado:3462}
+};
+
+var highlights={
+  jan:[{t:'green',l:'Destaque',x:'Melhor resultado: <strong>+R$ 31.567</strong>. Férias Nstech (R$ 26.020) turbinaram a receita.'},{t:'red',l:'Atenção',x:'Itaú Visa <strong>R$ 24.062</strong> — maior fatura do ano. IOF elevado.'},{t:'amber',l:'Investimento',x:'Finan. Caixa iniciado (R$ 1.545) + VGBL Sarah (R$ 125).'}],
+  fev:[{t:'red',l:'Pior mês',x:'Déficit <strong>R$ 13.484</strong>. Cartões R$ 23.302 + Prius R$ 3.000.'},{t:'amber',l:'IOF alto',x:'IOF STD <strong>R$ 655,79</strong>. Empréstimo Nu R$ 3.480.'},{t:'green',l:'Positivo',x:'Purpurata férias R$ 4.550 + Nstech adiant. R$ 7.453 seguraram o saldo.'}],
+  mar:[{t:'green',l:'PPR Nstech',x:'<strong>R$ 56.832</strong> — maior evento financeiro do trimestre.'},{t:'green',l:'Aportes cofres',x:'R$ 25k Uni + R$ 12,5k Prev + R$ 3k 15y = <strong>R$ 40.500</strong>.'},{t:'red',l:'Visa alto',x:'Itaú Visa <strong>R$ 29.344</strong>. Móveis R$ 3.100 ainda parcelados.'}],
+  abr:[{t:'amber',l:'Previsto',x:'Déficit R$ 8.524 pelo Visa (R$ 28.250) + móveis.'},{t:'green',l:'Nstech adiant.',x:'R$ 14.910 em 15/abr estabiliza o caixa.'},{t:'amber',l:'Extras',x:'Inglês R$ 750 + IPTU R$ 1.307 + dentista R$ 3.000.'}],
+  mai:[{t:'green',l:'Recuperação',x:'Volta ao azul: <strong>+R$ 2.912</strong>. Visa cai para R$ 12.400.'},{t:'amber',l:'Prev. Gastos',x:'Reserva R$ 10.500/mês para cartões.'},{t:'amber',l:'Mesada Sogra',x:'Sobe para R$ 300 a partir de maio.'}],
+  jun:[{t:'green',l:'Estável',x:'+R$ 1.162. Visa cai para R$ 8.400.'},{t:'red',l:'Aniv. Sarah',x:'<strong>R$ 2.500</strong> para aniversário da Sarah.'},{t:'amber',l:'IPTU',x:'2ª parcela IPTU R$ 1.250.'}],
+  jul:[{t:'green',l:'Aportes cofres',x:'Uni +R$ 2k · Prev +R$ 1k · 15y +R$ 500.'},{t:'green',l:'+R$ 2.312',x:'Visa cai para R$ 7.500.'},{t:'amber',l:'Estável',x:'Receitas ~R$ 35.700/mês.'}],
+  ago:[{t:'green',l:'Crescimento',x:'Saldo <strong>R$ 28.261</strong>. Aportes mensais mantidos.'},{t:'green',l:'+R$ 3.512',x:'Visa R$ 6.300 — menor do ano.'},{t:'amber',l:'Tendência',x:'Despesas caindo mês a mês.'}],
+  set:[{t:'green',l:'+R$ 5.462',x:'Saldo ultrapassa R$ 33k.'},{t:'green',l:'Cofres',x:'Uni R$ 31k · Prev R$ 15,5k.'},{t:'viagem',l:'Foz do Iguaçu',x:'24–27/set. <strong>R$ 5.000</strong> reservados.'}],
+  out:[{t:'green',l:'+R$ 3.412',x:'Saldo R$ 37.135 — recorde do ano.'},{t:'amber',l:'Rio de Janeiro',x:'10–16/out. Cofres: Uni R$ 33k, Prev R$ 16,5k.'},{t:'green',l:'Cofres crescem',x:'Aportes mensais mantidos.'}],
+  nov:[{t:'green',l:'13º salários',x:'Nstech R$ 15k + Purpurata R$ 4,5k = <strong>R$ 19.500</strong>.'},{t:'green',l:'Grandes aportes',x:'Uni +R$ 13k · Prev +R$ 7k · 15y +R$ 1,5k.'},{t:'amber',l:'Viagem Rio',x:'<strong>R$ 10.000</strong> reservados.'}],
+  dez:[{t:'green',l:'Encerramento',x:'Saldo <strong>R$ 43.709</strong>. Uni R$ 60k · Prev R$ 30k.'},{t:'green',l:'Patrimônio total',x:'<strong>R$ 163.805</strong> (saldo + investimentos).'},{t:'green',l:'Cofre 15y',x:'Encerra em R$ 10.000.'}]
+};
+
+var lancamentos={
+  jan:[
+    {data:'01/jan',motivo:'Saldo 2025 - ITAU',forma:'conta',receita:3570.74,despesa:0,status:'Pago',saldo:3570.74},
+    {data:'01/jan',motivo:'Saldo 2025 - STD',forma:'conta',receita:766.04,despesa:0,status:'Pago',saldo:4336.78},
+    {data:'01/jan',motivo:'Saldo 2025 - CAIXA',forma:'conta',receita:716.23,despesa:0,status:'Pago',saldo:5053.01},
+    {data:'01/jan',motivo:'Iof STD',forma:'conta',receita:0,despesa:71.44,status:'Pago',saldo:4981.57},
+    {data:'01/jan',motivo:'Iof Caixa',forma:'conta',receita:0,despesa:71.19,status:'Pago',saldo:4910.38},
+    {data:'02/jan',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:114.19,status:'Pago',saldo:4796.19},
+    {data:'12/jan',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:102.2,status:'Pago',saldo:4693.99},
+    {data:'05/jan',motivo:'Itau Master',forma:'cartão',receita:0,despesa:6130.59,status:'Pago',saldo:-1436.6},
+    {data:'05/jan',motivo:'Iof itau',forma:'conta',receita:0,despesa:150.34,status:'Pago',saldo:-1586.94},
+    {data:'05/jan',motivo:'Pix gilson leandro',forma:'pix',receita:0,despesa:150.0,status:'Pago',saldo:-1736.94},
+    {data:'06/jan',motivo:'Purpurata - Salário',forma:'conta',receita:7170.0,despesa:0,status:'Pago',saldo:5433.06},
+    {data:'06/jan',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:24062.29,status:'Pago',saldo:-18629.23},
+    {data:'07/jan',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1590.0,status:'Pago',saldo:-20219.23},
+    {data:'07/jan',motivo:'Diarista',forma:'conta',receita:0,despesa:840.0,status:'Pago',saldo:-21059.23},
+    {data:'07/jan',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60.0,status:'Pago',saldo:-21119.23},
+    {data:'07/jan',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:380.0,status:'Pago',saldo:-21499.23},
+    {data:'07/jan',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125.0,status:'Pago',saldo:-21624.23},
+    {data:'07/jan',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300.0,status:'Pago',saldo:-21924.23},
+    {data:'07/jan',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60.0,status:'Pago',saldo:-21984.23},
+    {data:'08/jan',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:242.57,status:'Pago',saldo:-22226.8},
+    {data:'26/jan',motivo:'Emprestimo Nu',forma:'conta',receita:3050.0,despesa:0,status:'Pago',saldo:-19176.8},
+    {data:'10/jan',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:570.0,status:'Pago',saldo:-19746.8},
+    {data:'10/jan',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:194.43,status:'Pago',saldo:-19941.23},
+    {data:'10/jan',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:120.0,status:'Pago',saldo:-20061.23},
+    {data:'10/jan',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120.0,status:'Pago',saldo:-20181.23},
+    {data:'10/jan',motivo:'Telefonia (TIM JZ - SZ)',forma:'boleto',receita:0,despesa:43.6,status:'Pago',saldo:-20224.83},
+    {data:'11/jan',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1545.0,status:'Pago',saldo:-21769.83},
+    {data:'12/jan',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35.0,status:'Pago',saldo:-21804.83},
+    {data:'12/jan',motivo:'Móveis',forma:'boleto',receita:0,despesa:3100.0,status:'Pago',saldo:-24904.83},
+    {data:'15/jan',motivo:'Nstech - adiantamento',forma:'conta',receita:12422.0,despesa:0,status:'Pago',saldo:-12482.83},
+    {data:'15/jan',motivo:'Nstech - reembolso',forma:'conta',receita:472.0,despesa:0,status:'Pago',saldo:-12010.83},
+    {data:'15/jan',motivo:'Aluguel',forma:'conta',receita:1275.0,despesa:0,status:'Pago',saldo:-10735.83},
+    {data:'16/jan',motivo:'Nstech - férias',forma:'conta',receita:5283.0,despesa:0,status:'Pago',saldo:-5452.83},
+    {data:'16/jan',motivo:'Pix samela celular',forma:'pix',receita:1000.0,despesa:0,status:'Pago',saldo:-4452.83},
+    {data:'16/jan',motivo:'Pix m4 produtos',forma:'pix',receita:0,despesa:20.0,status:'Pago',saldo:-4472.83},
+    {data:'19/jan',motivo:'Purpurata - Férias',forma:'conta',receita:2014.0,despesa:0,status:'Pago',saldo:-2458.83},
+    {data:'19/jan',motivo:'Pix pai dollar',forma:'pix',receita:0,despesa:3700.0,status:'Pago',saldo:-6158.83},
+    {data:'19/jan',motivo:'Pix Cleber Praia',forma:'pix',receita:0,despesa:228.0,status:'Pago',saldo:-6386.83},
+    {data:'21/jan',motivo:'Purpurata - adiant.',forma:'conta',receita:2340.0,despesa:0,status:'Pago',saldo:-4046.83},
+    {data:'21/jan',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25.0,status:'Pago',saldo:-4071.83},
+    {data:'26/jan',motivo:'Telecom',forma:'conta',receita:3458.0,despesa:0,status:'Pago',saldo:-613.83},
+    {data:'26/jan',motivo:'Pix Cleber Praia',forma:'pix',receita:180.0,despesa:0,status:'Pago',saldo:-433.83},
+    {data:'30/jan',motivo:'Nstech - salario',forma:'conta',receita:5981.0,despesa:0,status:'Pago',saldo:5547.17},
+    {data:'30/jan',motivo:'Nstech - férias',forma:'conta',receita:26020.0,despesa:0,status:'Pago',saldo:31567.17}
+  ],
+  fev:[
+    {data:'01/fev',motivo:'Iof STD',forma:'conta',receita:0,despesa:655.79,status:'Pago',saldo:30911.38},
+    {data:'01/fev',motivo:'Iof Caixa',forma:'conta',receita:0,despesa:37.33,status:'Pago',saldo:30874.05},
+    {data:'03/fev',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115.0,status:'Pago',saldo:30759.05},
+    {data:'05/fev',motivo:'Itau Master',forma:'cartão',receita:0,despesa:9940.0,status:'Pago',saldo:20819.05},
+    {data:'05/fev',motivo:'Iof itau',forma:'conta',receita:0,despesa:125.0,status:'Pago',saldo:20694.05},
+    {data:'05/fev',motivo:'Pix formiga',forma:'pix',receita:0,despesa:600.0,status:'Pago',saldo:20094.05},
+    {data:'06/fev',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:13362.0,status:'Pago',saldo:6732.05},
+    {data:'06/fev',motivo:'Móveis',forma:'boleto',receita:0,despesa:3100.0,status:'Pago',saldo:3632.05},
+    {data:'07/fev',motivo:'Purpurata - Salário',forma:'conta',receita:7727.0,despesa:0,status:'Pago',saldo:11359.05},
+    {data:'07/fev',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707.0,status:'Pago',saldo:9652.05},
+    {data:'07/fev',motivo:'Diarista',forma:'conta',receita:0,despesa:870.0,status:'Pago',saldo:8782.05},
+    {data:'07/fev',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60.0,status:'Pago',saldo:8722.05},
+    {data:'07/fev',motivo:'Banho pet',forma:'conta',receita:0,despesa:160.0,status:'Pago',saldo:8562.05},
+    {data:'07/fev',motivo:'Presente prof',forma:'conta',receita:0,despesa:11.0,status:'Pago',saldo:8551.05},
+    {data:'07/fev',motivo:'Strudel',forma:'conta',receita:0,despesa:114.0,status:'Pago',saldo:8437.05},
+    {data:'07/fev',motivo:'Cleiton',forma:'conta',receita:0,despesa:230.0,status:'Pago',saldo:8207.05},
+    {data:'07/fev',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125.0,status:'Pago',saldo:8082.05},
+    {data:'07/fev',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:970.0,status:'Pago',saldo:7112.05},
+    {data:'07/fev',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60.0,status:'Pago',saldo:7052.05},
+    {data:'08/fev',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:350.0,status:'Pago',saldo:6702.05},
+    {data:'08/fev',motivo:'Emprestimo Nu',forma:'conta',receita:0,despesa:3480.0,status:'Pago',saldo:3222.05},
+    {data:'10/fev',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:105.89,status:'Pago',saldo:3116.16},
+    {data:'10/fev',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:583.0,status:'Pago',saldo:2533.16},
+    {data:'10/fev',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:123.0,status:'Pago',saldo:2410.16},
+    {data:'10/fev',motivo:'Telefonia (TIM JZ - SZ)',forma:'boleto',receita:0,despesa:126.98,status:'Pago',saldo:2283.18},
+    {data:'10/fev',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35.0,status:'Pago',saldo:2248.18},
+    {data:'11/fev',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1541.0,status:'Pago',saldo:707.18},
+    {data:'12/fev',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:167.34,status:'Pago',saldo:539.84},
+    {data:'13/fev',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:166.79,status:'Pago',saldo:373.05},
+    {data:'13/fev',motivo:'Nstech - adiantamento',forma:'conta',receita:7453.0,despesa:0,status:'Pago',saldo:7826.05},
+    {data:'15/fev',motivo:'Aluguel',forma:'conta',receita:1250.0,despesa:0,status:'Pago',saldo:9076.05},
+    {data:'20/fev',motivo:'Pix samela celular',forma:'pix',receita:150.0,despesa:0,status:'Pago',saldo:9226.05},
+    {data:'20/fev',motivo:'Pix michel alves',forma:'pix',receita:0,despesa:30.0,status:'Pago',saldo:9196.05},
+    {data:'20/fev',motivo:'Purpurata - Férias',forma:'conta',receita:4550.0,despesa:0,status:'Pago',saldo:13746.05},
+    {data:'23/fev',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25.0,status:'Pago',saldo:13721.05},
+    {data:'26/fev',motivo:'Telecom',forma:'conta',receita:3410.0,despesa:0,status:'Pago',saldo:17131.05},
+    {data:'27/fev',motivo:'Nstech - salario',forma:'conta',receita:3952.0,despesa:0,status:'Pago',saldo:21083.05},
+    {data:'27/fev',motivo:'Pintura Prius',forma:'conta',receita:0,despesa:3000.0,status:'Pago',saldo:18083.05}
+  ],
+  mar:[
+    {data:'02/mar',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115.0,status:'Pago',saldo:17968.05},
+    {data:'02/mar',motivo:'Pix Kethleen',forma:'pix',receita:90.0,despesa:0,status:'Pago',saldo:18058.05},
+    {data:'02/mar',motivo:'Pix Cleber Churras',forma:'pix',receita:62.0,despesa:0,status:'Pago',saldo:18120.05},
+    {data:'02/mar',motivo:'Jardim',forma:'pix',receita:0,despesa:200.0,status:'Pago',saldo:17920.05},
+    {data:'03/mar',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:250.0,status:'Pago',saldo:17670.05},
+    {data:'04/mar',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106.0,status:'Pago',saldo:17564.05},
+    {data:'05/mar',motivo:'Itau Master',forma:'cartão',receita:0,despesa:5820.0,status:'Pago',saldo:11744.05},
+    {data:'06/mar',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:29344.0,status:'Pago',saldo:-17599.95},
+    {data:'06/mar',motivo:'Móveis',forma:'boleto',receita:0,despesa:3100.0,status:'Pago',saldo:-20699.95},
+    {data:'06/mar',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:162.85,status:'Pago',saldo:-20862.8},
+    {data:'07/mar',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90.0,status:'Pago',saldo:-20952.8},
+    {data:'07/mar',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125.0,status:'Pago',saldo:-21077.8},
+    {data:'07/mar',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300.0,status:'Pago',saldo:-21377.8},
+    {data:'07/mar',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:100.0,status:'Pago',saldo:-21477.8},
+    {data:'07/mar',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60.0,status:'Pago',saldo:-21537.8},
+    {data:'07/mar',motivo:'Purpurata - Salário',forma:'conta',receita:9550.0,despesa:0,status:'Pago',saldo:-11987.8},
+    {data:'07/mar',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707.0,status:'Pago',saldo:-13694.8},
+    {data:'07/mar',motivo:'Diarista',forma:'conta',receita:0,despesa:955.0,status:'Pago',saldo:-14649.8},
+    {data:'07/mar',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60.0,status:'Pago',saldo:-14709.8},
+    {data:'08/mar',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:517.0,status:'Pago',saldo:-15226.8},
+    {data:'10/mar',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571.0,status:'Pago',saldo:-15797.8},
+    {data:'10/mar',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120.0,status:'Pago',saldo:-15917.8},
+    {data:'10/mar',motivo:'Telefonia (TIM JZ - SZ)',forma:'boleto',receita:0,despesa:127.0,status:'Pago',saldo:-16044.8},
+    {data:'10/mar',motivo:'Pix Churras Marcelo',forma:'pix',receita:0,despesa:70.0,status:'Pago',saldo:-16114.8},
+    {data:'11/mar',motivo:'Detran Multa',forma:'conta',receita:0,despesa:105.0,status:'Pago',saldo:-16219.8},
+    {data:'11/mar',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35.0,status:'Pago',saldo:-16254.8},
+    {data:'11/mar',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551.0,status:'Pago',saldo:-17805.8},
+    {data:'11/mar',motivo:'Radiologia - dentista',forma:'conta',receita:0,despesa:100.0,status:'Pago',saldo:-17905.8},
+    {data:'12/mar',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88.0,status:'Pago',saldo:-17993.8},
+    {data:'12/mar',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58.0,status:'Pago',saldo:-18051.8},
+    {data:'15/mar',motivo:'Pix Bike',forma:'pix',receita:0,despesa:79.0,status:'Pago',saldo:-18130.8},
+    {data:'15/mar',motivo:'Pix Moveis',forma:'pix',receita:0,despesa:950.0,status:'Pago',saldo:-19080.8},
+    {data:'15/mar',motivo:'Nstech - adiantamento',forma:'conta',receita:14910.0,despesa:0,status:'Pago',saldo:-4170.8},
+    {data:'15/mar',motivo:'Aluguel',forma:'conta',receita:1363.0,despesa:0,status:'Pago',saldo:-2807.8},
+    {data:'15/mar',motivo:'Pix samela celular',forma:'pix',receita:150.0,despesa:0,status:'Pago',saldo:-2657.8},
+    {data:'15/mar',motivo:'Restaurante',forma:'conta',receita:0,despesa:15.0,status:'Pago',saldo:-2672.8},
+    {data:'15/mar',motivo:'Passeio Bonja',forma:'conta',receita:0,despesa:203.0,status:'Pago',saldo:-2875.8},
+    {data:'20/mar',motivo:'Purpurata - adiant.',forma:'conta',receita:4000.0,despesa:0,status:'Pago',saldo:1124.2},
+    {data:'20/mar',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25.0,status:'Pago',saldo:1099.2},
+    {data:'21/mar',motivo:'Beach pizza',forma:'conta',receita:0,despesa:80.0,status:'Pago',saldo:1019.2},
+    {data:'23/mar',motivo:'Pix Detran',forma:'pix',receita:0,despesa:87.0,status:'Pago',saldo:932.2},
+    {data:'23/mar',motivo:'Vinho itau pontos',forma:'conta',receita:0,despesa:5.0,status:'Pago',saldo:927.2},
+    {data:'23/mar',motivo:'Beach almoço',forma:'conta',receita:0,despesa:129.0,status:'Pago',saldo:798.2},
+    {data:'27/mar',motivo:'Telecom',forma:'conta',receita:3385.0,despesa:0,status:'Pago',saldo:4183.2},
+    {data:'31/mar',motivo:'Nstech - salario',forma:'conta',receita:6926.0,despesa:0,status:'Pago',saldo:11109.2},
+    {data:'31/mar',motivo:'Nstech - ppr',forma:'conta',receita:56832.0,despesa:0,status:'Pago',saldo:67941.2},
+    {data:'31/mar',motivo:'Cabelo Ale',forma:'conta',receita:0,despesa:553.61,status:'Pago',saldo:67387.59},
+    {data:'31/mar',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:25000.0,status:'Pago',saldo:42387.59},
+    {data:'31/mar',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:12500.0,status:'Pago',saldo:29887.59},
+    {data:'31/mar',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:3000.0,status:'Pago',saldo:26887.59}
+  ],
+  abr:[
+    {data:'02/abr',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115.0,status:'Previsto',saldo:26772.59},
+    {data:'02/abr',motivo:'Jardim',forma:'pix',receita:0,despesa:130.0,status:'Previsto',saldo:26642.59},
+    {data:'03/abr',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:3000.0,status:'Previsto',saldo:23642.59},
+    {data:'04/abr',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106.0,status:'Previsto',saldo:23536.59},
+    {data:'05/abr',motivo:'Itau Master',forma:'cartão',receita:0,despesa:6474.32,status:'Pago',saldo:17036.59,fatura:'master_abr'},
+    {data:'06/abr',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:28226.06,status:'Pago',saldo:-11213.41,fatura:'visa_abr'},
+    {data:'06/abr',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:96.29,status:'Agendado',saldo:-11309.7},
+    {data:'01/abr',motivo:'Cabelo Ale',forma:'conta',receita:0,despesa:554.0,status:'Pago',saldo:-11863.7},
+    {data:'07/abr',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90.0,status:'Previsto',saldo:-11953.7},
+    {data:'07/abr',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125.0,status:'Previsto',saldo:-12078.7},
+    {data:'07/abr',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300.0,status:'Previsto',saldo:-12378.7},
+    {data:'07/abr',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:100.0,status:'Previsto',saldo:-12478.7},
+    {data:'07/abr',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60.0,status:'Previsto',saldo:-12538.7},
+    {data:'07/abr',motivo:'Purpurata - Salário',forma:'conta',receita:5727.0,despesa:0,status:'Previsto',saldo:-6811.7},
+    {data:'07/abr',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707.0,status:'Previsto',saldo:-8518.7},
+    {data:'07/abr',motivo:'Escola (Bonja Natação)',forma:'boleto',receita:0,despesa:285.0,status:'Previsto',saldo:-8803.7},
+    {data:'07/abr',motivo:'Diarista',forma:'conta',receita:0,despesa:1160.0,status:'Previsto',saldo:-9963.7},
+    {data:'07/abr',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60.0,status:'Previsto',saldo:-10023.7},
+    {data:'08/abr',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:120.0,status:'Pago',saldo:-10143.7},
+    {data:'10/abr',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571.0,status:'Agendado',saldo:-10714.7},
+    {data:'10/abr',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120.0,status:'Agendado',saldo:-10834.7},
+    {data:'10/abr',motivo:'Telefonia (TIM JZ - SZ)',forma:'boleto',receita:0,despesa:127.0,status:'Agendado',saldo:-10961.7},
+    {data:'11/abr',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35.0,status:'Previsto',saldo:-10996.7},
+    {data:'11/abr',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551.0,status:'Previsto',saldo:-12547.7},
+    {data:'12/abr',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88.0,status:'Agendado',saldo:-12635.7},
+    {data:'12/abr',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:168.0,status:'Agendado',saldo:-12803.7},
+    {data:'15/abr',motivo:'Nstech - adiantamento',forma:'conta',receita:14910.0,despesa:0,status:'Previsto',saldo:2106.3},
+    {data:'15/abr',motivo:'Aluguel',forma:'conta',receita:1363.0,despesa:0,status:'Previsto',saldo:3469.3},
+    {data:'15/abr',motivo:'Pix samela celular',forma:'pix',receita:150.0,despesa:0,status:'Previsto',saldo:3619.3},
+    {data:'15/abr',motivo:'Passeio Bonja',forma:'conta',receita:0,despesa:203.0,status:'Previsto',saldo:3416.3},
+    {data:'20/abr',motivo:'Purpurata - adiant.',forma:'conta',receita:4000.0,despesa:0,status:'Previsto',saldo:7416.3},
+    {data:'20/abr',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25.0,status:'Previsto',saldo:7391.3},
+    {data:'27/abr',motivo:'Telecom',forma:'conta',receita:3400.0,despesa:0,status:'Previsto',saldo:10791.3},
+    {data:'30/abr',motivo:'Nstech - salario',forma:'conta',receita:6150.0,despesa:0,status:'Previsto',saldo:16941.3},
+    {data:'10/abr',motivo:'Ingles',forma:'conta',receita:0,despesa:750.0,status:'Previsto',saldo:16191.3},
+    {data:'10/abr',motivo:'IPTU',forma:'conta',receita:0,despesa:1307.74,status:'Pago',saldo:14883.56},
+    {data:'02/abr',motivo:'Morangos',forma:'conta',receita:0,despesa:20.0,status:'Pago',saldo:14863.56},
+    {data:'05/abr',motivo:'Celular mãe',forma:'conta',receita:3500.0,despesa:0,status:'Pago',saldo:18363.56}
+  ],
+  mai:[
+    {data:'02/mai',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:18248.56},
+    {data:'03/mai',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:1550,status:'Previsto',saldo:16568.56},
+    {data:'04/mai',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:16462.56},
+    {data:'05/mai',motivo:'Itau Master',forma:'cartão',receita:0,despesa:2100,status:'Previsto',saldo:14362.56},
+    {data:'06/mai',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:12400,status:'Previsto',saldo:1962.56},
+    {data:'06/mai',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:1897.56},
+    {data:'06/mai',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:-8602.44},
+    {data:'07/mai',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:-8692.44},
+    {data:'07/mai',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:-8817.44},
+    {data:'07/mai',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-9117.44},
+    {data:'07/mai',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-9417.44},
+    {data:'07/mai',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:-9477.44},
+    {data:'07/mai',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:-3750.44},
+    {data:'07/mai',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:-5457.44},
+    {data:'07/mai',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:-5752.44},
+    {data:'07/mai',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:-6912.44},
+    {data:'07/mai',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:-6972.44},
+    {data:'08/mai',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:-7372.44},
+    {data:'10/mai',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:-7943.44},
+    {data:'10/mai',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:-8063.44},
+    {data:'10/mai',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:-8190.44},
+    {data:'11/mai',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:-8225.44},
+    {data:'11/mai',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:-9776.44},
+    {data:'12/mai',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:-9864.44},
+    {data:'12/mai',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:-9922.44},
+    {data:'15/mai',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:4987.56},
+    {data:'15/mai',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:6350.56},
+    {data:'15/mai',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:6500.56},
+    {data:'20/mai',motivo:'Purpurata - adiant.',forma:'conta',receita:6000,despesa:0,status:'Previsto',saldo:12500.56},
+    {data:'20/mai',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:12475.56},
+    {data:'27/mai',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:15875.56},
+    {data:'31/mai',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:22025.56},
+    {data:'31/mai',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:21275.56}
+  ],
+  jun:[
+    {data:'02/jun',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:21160.56},
+    {data:'03/jun',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:1550,status:'Previsto',saldo:19480.56},
+    {data:'04/jun',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:19374.56},
+    {data:'05/jun',motivo:'Itau Master',forma:'cartão',receita:0,despesa:2100,status:'Previsto',saldo:17274.56},
+    {data:'06/jun',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:8400,status:'Previsto',saldo:8874.56},
+    {data:'06/jun',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:8809.56},
+    {data:'06/jun',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:-1690.44},
+    {data:'06/jun',motivo:'Aniversário Sarah',forma:'conta',receita:0,despesa:2500,status:'Previsto',saldo:-4190.44},
+    {data:'07/jun',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:-4280.44},
+    {data:'07/jun',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:-4405.44},
+    {data:'07/jun',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-4705.44},
+    {data:'07/jun',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-5005.44},
+    {data:'07/jun',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:-5065.44},
+    {data:'07/jun',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:661.56},
+    {data:'07/jun',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:-1045.44},
+    {data:'07/jun',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:-1340.44},
+    {data:'07/jun',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:-2500.44},
+    {data:'07/jun',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:-2560.44},
+    {data:'08/jun',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:-2960.44},
+    {data:'10/jun',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:-3531.44},
+    {data:'10/jun',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:-3651.44},
+    {data:'10/jun',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:-3778.44},
+    {data:'10/jun',motivo:'IPTU 2ª parcela',forma:'conta',receita:0,despesa:1250,status:'Previsto',saldo:-5028.44},
+    {data:'11/jun',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:-5063.44},
+    {data:'11/jun',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:-6614.44},
+    {data:'12/jun',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:-6702.44},
+    {data:'12/jun',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:-6760.44},
+    {data:'15/jun',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:8149.56},
+    {data:'15/jun',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:9512.56},
+    {data:'15/jun',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:9662.56},
+    {data:'20/jun',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:13662.56},
+    {data:'20/jun',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:13637.56},
+    {data:'27/jun',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:17037.56},
+    {data:'30/jun',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:22437.56},
+    {data:'30/jun',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:22437.56}
+  ],
+  jul:[
+    {data:'02/jul',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:22322.56},
+    {data:'03/jul',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:1550,status:'Previsto',saldo:20642.56},
+    {data:'04/jul',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:20536.56},
+    {data:'05/jul',motivo:'Itau Master',forma:'cartão',receita:0,despesa:2100,status:'Previsto',saldo:18436.56},
+    {data:'06/jul',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:7500,status:'Previsto',saldo:10936.56},
+    {data:'06/jul',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:10871.56},
+    {data:'06/jul',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:371.56},
+    {data:'07/jul',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:281.56},
+    {data:'07/jul',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:156.56},
+    {data:'07/jul',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-143.44},
+    {data:'07/jul',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:-443.44},
+    {data:'07/jul',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:-503.44},
+    {data:'07/jul',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:5223.56},
+    {data:'07/jul',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:3516.56},
+    {data:'07/jul',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:3221.56},
+    {data:'07/jul',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:2061.56},
+    {data:'07/jul',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:2001.56},
+    {data:'08/jul',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:1601.56},
+    {data:'10/jul',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:1030.56},
+    {data:'10/jul',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:910.56},
+    {data:'10/jul',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:783.56},
+    {data:'11/jul',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:748.56},
+    {data:'11/jul',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:-802.44},
+    {data:'12/jul',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:-890.44},
+    {data:'12/jul',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:-948.44},
+    {data:'15/jul',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:13961.56},
+    {data:'15/jul',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:15324.56},
+    {data:'15/jul',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:15474.56},
+    {data:'20/jul',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:19474.56},
+    {data:'20/jul',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:19449.56},
+    {data:'27/jul',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:22849.56},
+    {data:'31/jul',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:28999.56},
+    {data:'31/jul',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:28249.56},
+    {data:'31/jul',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:2000,status:'Previsto',saldo:26249.56},
+    {data:'31/jul',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:1000,status:'Previsto',saldo:25249.56},
+    {data:'31/jul',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:500,status:'Previsto',saldo:24749.56}
+  ],
+  ago:[
+    {data:'02/ago',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:24634.56},
+    {data:'03/ago',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:1550,status:'Previsto',saldo:22954.56},
+    {data:'04/ago',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:22848.56},
+    {data:'05/ago',motivo:'Itau Master',forma:'cartão',receita:0,despesa:2100,status:'Previsto',saldo:20748.56},
+    {data:'06/ago',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:6300,status:'Previsto',saldo:14448.56},
+    {data:'06/ago',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:14383.56},
+    {data:'06/ago',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:3883.56},
+    {data:'07/ago',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:3793.56},
+    {data:'07/ago',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:3668.56},
+    {data:'07/ago',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:3368.56},
+    {data:'07/ago',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:3068.56},
+    {data:'07/ago',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:3008.56},
+    {data:'07/ago',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:8735.56},
+    {data:'07/ago',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:7028.56},
+    {data:'07/ago',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:6733.56},
+    {data:'07/ago',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:5573.56},
+    {data:'07/ago',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:5513.56},
+    {data:'08/ago',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:5113.56},
+    {data:'10/ago',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:4542.56},
+    {data:'10/ago',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:4422.56},
+    {data:'10/ago',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:4295.56},
+    {data:'11/ago',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:4260.56},
+    {data:'11/ago',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:2709.56},
+    {data:'12/ago',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:2621.56},
+    {data:'12/ago',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:2563.56},
+    {data:'15/ago',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:17473.56},
+    {data:'15/ago',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:18836.56},
+    {data:'15/ago',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:18986.56},
+    {data:'20/ago',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:22986.56},
+    {data:'20/ago',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:22961.56},
+    {data:'27/ago',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:26361.56},
+    {data:'31/ago',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:32511.56},
+    {data:'30/ago',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:31761.56},
+    {data:'30/ago',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:2000,status:'Previsto',saldo:29761.56},
+    {data:'30/ago',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:1000,status:'Previsto',saldo:28761.56},
+    {data:'30/ago',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:500,status:'Previsto',saldo:28261.56}
+  ],
+  set:[
+    {data:'02/set',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:28146.56},
+    {data:'03/set',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:1550,status:'Previsto',saldo:26466.56},
+    {data:'04/set',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:26360.56},
+    {data:'05/set',motivo:'Itau Master',forma:'cartão',receita:0,despesa:650,status:'Previsto',saldo:25710.56},
+    {data:'06/set',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:5800,status:'Previsto',saldo:19910.56},
+    {data:'06/set',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:19845.56},
+    {data:'06/set',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:9345.56},
+    {data:'07/set',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:9255.56},
+    {data:'07/set',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:9130.56},
+    {data:'07/set',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:8830.56},
+    {data:'07/set',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:8530.56},
+    {data:'07/set',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:8470.56},
+    {data:'07/set',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:14197.56},
+    {data:'07/set',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:12490.56},
+    {data:'07/set',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:12195.56},
+    {data:'07/set',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:11035.56},
+    {data:'07/set',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:10975.56},
+    {data:'08/set',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:10575.56},
+    {data:'10/set',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:10004.56},
+    {data:'10/set',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:9884.56},
+    {data:'10/set',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:9757.56},
+    {data:'11/set',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:9722.56},
+    {data:'11/set',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:8171.56},
+    {data:'12/set',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:8083.56},
+    {data:'12/set',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:8025.56},
+    {data:'15/set',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:22935.56},
+    {data:'15/set',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:24298.56},
+    {data:'15/set',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:24448.56},
+    {data:'20/set',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:28448.56},
+    {data:'20/set',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:28423.56},
+    {data:'24/set',motivo:'Viagem Foz',forma:'conta',receita:0,despesa:5000,status:'Previsto',saldo:23423.56},
+    {data:'27/set',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:26823.56},
+    {data:'30/set',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:33723.56},
+    {data:'30/set',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:33723.56},
+    {data:'30/set',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:2000,status:'Previsto',saldo:31723.56},
+    {data:'30/set',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:1000,status:'Previsto',saldo:30723.56},
+    {data:'30/set',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:500,status:'Previsto',saldo:33723.56}
+  ],
+  out:[
+    {data:'02/out',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:33608.56},
+    {data:'03/out',motivo:'Viagem Foz',forma:'conta',receita:0,despesa:5000,status:'Previsto',saldo:28478.56},
+    {data:'04/out',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:28372.56},
+    {data:'05/out',motivo:'Itau Master',forma:'cartão',receita:0,despesa:650,status:'Previsto',saldo:27722.56},
+    {data:'06/out',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:4400,status:'Previsto',saldo:23322.56},
+    {data:'06/out',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:23257.56},
+    {data:'06/out',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:12757.56},
+    {data:'07/out',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:12667.56},
+    {data:'07/out',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:12542.56},
+    {data:'07/out',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:12242.56},
+    {data:'07/out',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:11942.56},
+    {data:'07/out',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:11882.56},
+    {data:'07/out',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:17609.56},
+    {data:'07/out',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:15902.56},
+    {data:'07/out',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:15607.56},
+    {data:'07/out',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:14447.56},
+    {data:'07/out',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:14387.56},
+    {data:'08/out',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:13987.56},
+    {data:'10/out',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:13416.56},
+    {data:'10/out',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:13296.56},
+    {data:'10/out',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:13169.56},
+    {data:'11/out',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:13134.56},
+    {data:'11/out',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:11583.56},
+    {data:'12/out',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:11495.56},
+    {data:'12/out',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:11437.56},
+    {data:'15/out',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:26347.56},
+    {data:'15/out',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:27710.56},
+    {data:'15/out',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:27860.56},
+    {data:'20/out',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:31860.56},
+    {data:'20/out',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:31835.56},
+    {data:'27/out',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:35235.56},
+    {data:'31/out',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:41385.56},
+    {data:'30/out',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:40635.56},
+    {data:'30/out',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:2000,status:'Previsto',saldo:38635.56},
+    {data:'30/out',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:1000,status:'Previsto',saldo:37635.56},
+    {data:'30/out',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:500,status:'Previsto',saldo:37135.56}
+  ],
+  nov:[
+    {data:'02/nov',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:37020.56},
+    {data:'03/nov',motivo:'Viagem Rio',forma:'conta',receita:0,despesa:10000,status:'Previsto',saldo:26890.56},
+    {data:'04/nov',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:26784.56},
+    {data:'05/nov',motivo:'Itau Master',forma:'cartão',receita:0,despesa:650,status:'Previsto',saldo:26134.56},
+    {data:'06/nov',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:4200,status:'Previsto',saldo:21934.56},
+    {data:'06/nov',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:21869.56},
+    {data:'06/nov',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:11369.56},
+    {data:'07/nov',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:11279.56},
+    {data:'07/nov',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:11154.56},
+    {data:'07/nov',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:10854.56},
+    {data:'07/nov',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:10554.56},
+    {data:'07/nov',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:10494.56},
+    {data:'07/nov',motivo:'Purpurata - Salário',forma:'conta',receita:5500,despesa:0,status:'Previsto',saldo:16221.56},
+    {data:'07/nov',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:14514.56},
+    {data:'07/nov',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:14219.56},
+    {data:'07/nov',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:13059.56},
+    {data:'07/nov',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:12999.56},
+    {data:'08/nov',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:12599.56},
+    {data:'10/nov',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:12028.56},
+    {data:'10/nov',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:11908.56},
+    {data:'10/nov',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:11781.56},
+    {data:'11/nov',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:11746.56},
+    {data:'11/nov',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:10195.56},
+    {data:'12/nov',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:10107.56},
+    {data:'12/nov',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:10049.56},
+    {data:'15/nov',motivo:'Nstech - adiantamento',forma:'conta',receita:16410,despesa:0,status:'Previsto',saldo:26459.56},
+    {data:'15/nov',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:27822.56},
+    {data:'15/nov',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:27972.56},
+    {data:'20/nov',motivo:'Purpurata - adiant.',forma:'conta',receita:5500,despesa:0,status:'Previsto',saldo:33472.56},
+    {data:'20/nov',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:33447.56},
+    {data:'27/nov',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:36847.56},
+    {data:'30/nov',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:42997.56},
+    {data:'30/nov',motivo:'Nstech - decimo',forma:'conta',receita:15000,despesa:0,status:'Previsto',saldo:57997.56},
+    {data:'30/nov',motivo:'Purpurata - decimo',forma:'conta',receita:4500,despesa:0,status:'Previsto',saldo:62497.56},
+    {data:'30/nov',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:61747.56},
+    {data:'30/nov',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:13000,status:'Previsto',saldo:48747.56},
+    {data:'30/nov',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:7000,status:'Previsto',saldo:41747.56},
+    {data:'30/nov',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:1500,status:'Previsto',saldo:40247.56}
+  ],
+  dez:[
+    {data:'02/dez',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115,status:'Previsto',saldo:40132.56},
+    {data:'02/dez',motivo:'Jardim',forma:'pix',receita:0,despesa:130,status:'Previsto',saldo:40002.56},
+    {data:'04/dez',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106,status:'Previsto',saldo:39896.56},
+    {data:'06/dez',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:1000,status:'Previsto',saldo:38896.56},
+    {data:'06/dez',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:65,status:'Previsto',saldo:38831.56},
+    {data:'06/dez',motivo:'Prev. Gastos',forma:'cartão',receita:0,despesa:10500,status:'Previsto',saldo:28331.56},
+    {data:'07/dez',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90,status:'Previsto',saldo:28241.56},
+    {data:'07/dez',motivo:'VGBL Sarah',forma:'conta',receita:0,despesa:125,status:'Previsto',saldo:28116.56},
+    {data:'07/dez',motivo:'Mesada Ale',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:27816.56},
+    {data:'07/dez',motivo:'Mesada Sogra',forma:'conta',receita:0,despesa:300,status:'Previsto',saldo:27516.56},
+    {data:'07/dez',motivo:'Igreja / Outros',forma:'conta',receita:0,despesa:60,status:'Previsto',saldo:27456.56},
+    {data:'07/dez',motivo:'Purpurata - Salário',forma:'conta',receita:5727,despesa:0,status:'Previsto',saldo:33183.56},
+    {data:'07/dez',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707,status:'Previsto',saldo:31476.56},
+    {data:'07/dez',motivo:'Escola (Natação)',forma:'boleto',receita:0,despesa:295,status:'Previsto',saldo:31181.56},
+    {data:'07/dez',motivo:'Diarista',forma:'conta',receita:0,despesa:1160,status:'Previsto',saldo:30021.56},
+    {data:'07/dez',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60,status:'Previsto',saldo:29961.56},
+    {data:'08/dez',motivo:'Mesada Jz',forma:'conta',receita:0,despesa:400,status:'Previsto',saldo:29561.56},
+    {data:'10/dez',motivo:'Condominio - Royal',forma:'boleto',receita:0,despesa:571,status:'Previsto',saldo:28990.56},
+    {data:'10/dez',motivo:'Internet - Royal',forma:'boleto',receita:0,despesa:120,status:'Previsto',saldo:28870.56},
+    {data:'10/dez',motivo:'Telefonia (TIM JZ)',forma:'boleto',receita:0,despesa:127,status:'Previsto',saldo:28743.56},
+    {data:'11/dez',motivo:'Serv. Caixa',forma:'conta',receita:0,despesa:35,status:'Previsto',saldo:28708.56},
+    {data:'11/dez',motivo:'Finan. Caixa',forma:'conta',receita:0,despesa:1551,status:'Previsto',saldo:27157.56},
+    {data:'12/dez',motivo:'Luz - Royal',forma:'boleto',receita:0,despesa:88,status:'Previsto',saldo:27069.56},
+    {data:'12/dez',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:58,status:'Previsto',saldo:27011.56},
+    {data:'15/dez',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Previsto',saldo:41921.56},
+    {data:'15/dez',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Previsto',saldo:43284.56},
+    {data:'15/dez',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:43434.56},
+    {data:'20/dez',motivo:'Purpurata - adiant.',forma:'conta',receita:4000,despesa:0,status:'Previsto',saldo:47434.56},
+    {data:'20/dez',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:47409.56},
+    {data:'27/dez',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:50809.56},
+    {data:'31/dez',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:56959.56},
+    {data:'31/dez',motivo:'Nstech - decimo',forma:'conta',receita:7000,despesa:0,status:'Previsto',saldo:63959.56},
+    {data:'31/dez',motivo:'Purpurata - decimo',forma:'conta',receita:4500,despesa:0,status:'Previsto',saldo:68459.56},
+    {data:'30/dez',motivo:'Ingles',forma:'conta',receita:0,despesa:750,status:'Previsto',saldo:67709.56},
+    {data:'30/dez',motivo:'Cofre Uni',forma:'conta',receita:0,despesa:14000,status:'Previsto',saldo:53709.56},
+    {data:'30/dez',motivo:'Cofre Prev',forma:'conta',receita:0,despesa:6500,status:'Previsto',saldo:47209.56},
+    {data:'30/dez',motivo:'Cofre 15y',forma:'conta',receita:0,despesa:3500,status:'Previsto',saldo:43709.56}
+  ]
+};
+
+var currentMes='jan';
+
+function fmt(v){if(!v)return '—';return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtS(v){var s=Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});return(v<0?'- R$ ':'R$ ')+s;}
+
+function statusTag(st){
+  if(!st) return '';
+  if(st==='Pago') return '<span class="stag stag-pago">✓ Pago</span>';
+  if(st==='Agendado') return '<span class="stag stag-agendado">⏰ Agendado</span>';
+  return '<span class="stag stag-prev">~ Previsto</span>';
+}
+
+function setMes(mes){
+  currentMes=mes;
+  document.getElementById('filter-mes').value=mes;
+  document.getElementById('filter-tipo').value='';
+  document.getElementById('filter-forma').value='';
+  document.getElementById('filter-status').value='';
+  document.getElementById('filter-search').value='';
+  renderLanc();
+  renderMesHl(mes);
+}
+
+function renderLanc(){
+  var mes=currentMes;
+  var tipo=document.getElementById('filter-tipo').value;
+  var forma=document.getElementById('filter-forma').value.toLowerCase();
+  var stfil=document.getElementById('filter-status').value;
+  var search=document.getElementById('filter-search').value.toLowerCase();
+  var info=mesesInfo[mes];
+  document.getElementById('mbadge').innerHTML='<div class="mbadge"><span class="mdot '+(info.realizado?'real':'prev')+'"></span>'+(info.realizado?'Realizado':'Previsto')+'</div>';
+  var rows=(lancamentos[mes]||[]).filter(function(l){
+    if(tipo==='receita'&&!l.receita)return false;
+    if(tipo==='despesa'&&!l.despesa)return false;
+    if(forma&&l.forma.toLowerCase()!==forma)return false;
+    if(stfil&&l.status!==stfil)return false;
+    if(search&&l.motivo.toLowerCase().indexOf(search)<0)return false;
+    return true;
+  });
+  var totR=0,totD=0;
+  rows.forEach(function(r){totR+=r.receita;totD+=r.despesa;});
+  var res=totR-totD;
+  document.getElementById('sumbar').innerHTML=
+    '<div class="si"><label>Receita</label><span class="up">'+fmt(totR)+'</span></div>'+
+    '<div class="si"><label>Despesa</label><span class="down">'+fmt(totD)+'</span></div>'+
+    '<div class="si"><label>Resultado</label><span class="'+(res>=0?'up':'down')+'">'+fmtS(res)+'</span></div>'+
+    '<div class="si"><label>Saldo final</label><span style="color:var(--text)">'+fmtS(info.saldo)+'</span></div>';
+  var tbody=document.getElementById('lanc-body');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text3)">Nenhum lançamento</td></tr>';return;}
+  tbody.innerHTML=rows.map(function(l){
+    var isR=l.receita>0,isD=l.despesa>0;
+    var val=isR?'<span class="up">'+fmt(l.receita)+'</span>':'<span class="down">'+fmt(l.despesa)+'</span>';
+        var fatLink=l.fatura?'<br><span class="fatura-link" data-fat="'+l.fatura+'">📊 ver fatura</span>':''
+    return '<tr>'+
+      '<td class="dt">'+l.data+'</td>'+
+      '<td class="mot">'+l.motivo+fatLink+'<br><span class="tag-f">'+l.forma+'</span> '+statusTag(l.status)+'</td>'+
+      '<td class="val">'+val+'</td>'+
+      '<td class="val"><span class="'+(l.saldo>=0?'up':'down')+'">'+fmtS(l.saldo)+'</span></td>'+
+      '</tr>';
+  }).join('');
+}
+
+function renderMesHl(mes){
+  var hs=highlights[mes]||[];
+  var el=document.getElementById('mes-hl');
+  if(!hs.length){el.innerHTML='';return;}
+  el.innerHTML='<div class="mes-hl-title">Destaques do mês</div>'+
+    hs.map(function(h){return '<div class="highlight '+(h.t==='viagem'?'amber':h.t)+'"><div class="hl-label">'+h.l+'</div><div class="hl-text">'+h.x+'</div></div>';}).join('');
+}
+
+// -- CHARTS ----------------------------------------
+function buildCharts(){
+  var meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var real=[true,true,true,false,false,false,false,false,false,false,false,false];
+  var saldos=[31567,18083,26888,18364,21276,22438,24750,28262,33724,37136,40248,43710];
+  var resultados=[31567,-13484,8805,-8524,2912,1162,2312,3512,5462,3412,3112,3462];
+  var receitas=[75718,28492,97268,39200,37700,35700,35700,35700,35700,35700,58200,47200];
+  var despesas=[44150,41976,88463,47724,34788,34538,33388,32188,30238,32288,55088,43738];
+  var finC=[1545,3086,4637,6188,7739,9290,10841,12392,13943,15494,17045,18596];
+  var vgbl=[125,250,375,500,625,750,875,1000,1125,1250,1375,1500];
+  var cofU=[0,0,25000,25000,25000,25000,27000,29000,31000,33000,46000,60000];
+  var cofP=[0,0,12500,12500,12500,12500,13500,14500,15500,16500,23500,30000];
+  var cof15=[0,0,3000,3000,3000,3000,3500,4000,4500,5000,6500,10000];
+  var invT=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];
+  var gc='rgba(255,255,255,0.05)';
+  var tf={family:'DM Mono',size:9};
+  var fk=function(v){return 'R$'+(v/1000).toFixed(0)+'k';};
+  var tt={backgroundColor:'#1e1e1e',titleColor:'#f0ede8',bodyColor:'#9a9690',borderColor:'rgba(255,255,255,0.1)',borderWidth:1};
+  var bscale={y:{ticks:{callback:fk,font:tf,color:'#5a5753'},grid:{color:gc},border:{display:false}},x:{ticks:{font:tf,color:'#5a5753',autoSkip:false,maxRotation:0},grid:{display:false},border:{display:false}}};
+
+  var dlPlugin={id:'customLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.textAlign='center';ctx.textBaseline='bottom';chart.data.datasets.forEach(function(ds,di){var meta=chart.getDatasetMeta(di);if(meta.hidden)return;meta.data.forEach(function(pt,i){var val=ds.data[i];if(!val&&val!==0)return;ctx.fillStyle=ds.datalabelColor||'rgba(240,237,232,0.75)';ctx.fillText(fk(val),pt.x,pt.y-3);});});ctx.restore();}};
+
+  new Chart(document.getElementById('saldoChart'),{type:'line',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:saldos,datalabelColor:'rgba(240,237,232,0.8)',pointBackgroundColor:saldos.map(function(_,i){return real[i]?'#4ade80':'#fbbf24';}),pointRadius:4,tension:0.35,fill:false,segment:{borderColor:function(c){return c.p0DataIndex<3?'#4ade80':'#fbbf24';},borderDash:function(c){return c.p0DataIndex<3?[]:[5,4];}}}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
+
+  new Chart(document.getElementById('resultChart'),{type:'bar',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:resultados,datalabelColor:'rgba(240,237,232,0.8)',backgroundColor:resultados.map(function(v,i){return v>=0?(real[i]?'#4ade80':'#86efac'):(real[i]?'#f87171':'#fca5a5');}),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
+
+  var rdPlugin={id:'rdLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.textAlign='center';chart.data.datasets.forEach(function(ds,di){var meta=chart.getDatasetMeta(di);if(meta.hidden)return;meta.data.forEach(function(pt,i){var val=ds.data[i];if(!val)return;ctx.fillStyle=di===0?'#93c5fd':'#fca5a5';ctx.textBaseline='bottom';ctx.fillText(fk(val),pt.x,pt.y-3);});});ctx.restore();}};
+  new Chart(document.getElementById('recDespChart'),{type:'bar',plugins:[rdPlugin],data:{labels:meses,datasets:[{data:receitas,backgroundColor:'#60a5fa',borderRadius:2,label:'Receita'},{data:despesas,backgroundColor:'#f87171',borderRadius:2,label:'Despesa'}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},rdLabels:{}},scales:bscale}});
+
+  var invPlugin={id:'invTotalLabel',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.fillStyle='rgba(240,237,232,0.85)';ctx.textAlign='center';ctx.textBaseline='bottom';var totals=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];var lastMeta=chart.getDatasetMeta(chart.data.datasets.length-1);lastMeta.data.forEach(function(pt,i){ctx.fillText(fk(totals[i]),pt.x,pt.y-3);});ctx.restore();}};
+  new Chart(document.getElementById('invChart'),{type:'bar',plugins:[invPlugin],data:{labels:meses,datasets:[{label:'Fin.',data:finC,backgroundColor:'#a78bfa'},{label:'VGBL',data:vgbl,backgroundColor:'#4ade80'},{label:'Uni',data:cofU,backgroundColor:'#60a5fa'},{label:'Prev',data:cofP,backgroundColor:'#f87171'},{label:'15y',data:cof15,backgroundColor:'#fbbf24'}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){return items[0].label;},label:function(c){return c.dataset.label+': '+fk(c.parsed.y);},footer:function(items){var totals=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];return 'Total: '+fk(totals[items[0].dataIndex]);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,footerColor:'#f0ede8',footerFont:{weight:'bold'},borderColor:tt.borderColor,borderWidth:1},invTotalLabel:{}},scales:{x:{stacked:true,ticks:{font:tf,color:'#5a5753',autoSkip:false,maxRotation:0},grid:{display:false},border:{display:false}},y:{stacked:true,ticks:{callback:fk,font:tf,color:'#5a5753'},grid:{color:gc},border:{display:false}}}}});
+}
+
+// -- FATURAS DATA ----------------------------------
+var faturas = {
+  master_abr: {
+    titulo: 'Itaú Master — Abril 2026',
+    total: 6474.32,
+    vencimento: '05/04/2026',
+    titular: 'Jonattam Zimmermann',
+    cartao: '5234.XXXX.XXXX.8221',
+    categorias: [
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 3166.31,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Angeloni (3×)',valor:980.73},
+          {desc:'Giassi Super (2×)',valor:535.31},
+          
+          {desc:'Mercado Julio Pedro',valor:214.77},
+          {desc:'KunzSupermer',valor:206.09},
+          {desc:'Angeloni JA40',valor:144.11},
+          {desc:'Supermercados (3×)',valor:165.41},
+          {desc:'Panificadora (2×)',valor:145.90},
+          {desc:'MDPSTHSH',valor:106.00},
+          {desc:'Mercado Juli',valor:117.43},
+          {desc:'KfluzComerci',valor:72.80},
+          {desc:'KIBS',valor:74.56},
+          {desc:'Amor Canela (2×)',valor:84.62},
+          {desc:'Condor (2×)',valor:23.57},
+          {desc:'Q Pastel (2×)',valor:32.50},
+          {desc:'MgGelateria',valor:29.70},
+          {desc:'Cacau Show',valor:4.99},
+          {desc:'EPN Restaura',valor:12.50},
+          {desc:'Mercado Bras',valor:8.99},
+          {desc:'Bubble Mix T',valor:20.00},
+          {desc:'Pasquali',valor:29.49},
+          {desc:'Posto Rudnic (comida)',valor:4.90}
+        ]
+      },
+      {
+        nome: 'Turismo',
+        icon: '✈️',
+        valor: 1703.61,
+        cor: '#f97316',
+        itens: [
+          {desc:'Royal Caribbean (parc 6/10)',valor:1453.71},
+          {desc:'MercadoLivre (Lençóis Paulista)',valor:249.90}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 706.05,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'Allianz Seguro Auto (parc 7/10)',valor:229.37},
+          {desc:'Tokio Marine Auto',valor:220.78},
+          {desc:'TagItaú Jonattam (4×)',valor:200.00},
+          {desc:'Posto Rudnic',valor:55.30},
+          {desc:'Uber One',valor:19.90},
+          {desc:'Posto Rudnic (combustível)',valor:4.90}
+        ]
+      },
+      {
+        nome: 'Lazer',
+        icon: '🎬',
+        valor: 173.70,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'Netflix (2×)',valor:119.80},
+          {desc:'YouTube Premium',valor:53.90}
+        ]
+      },
+      {
+        nome: 'Saúde',
+        icon: '💊',
+        valor: 411.06,
+        cor: '#f87171',
+        itens: [
+          {desc:'Academia Ritmo (parc 5/12)',valor:189.80},
+          {desc:'Academia Ritmo (parc 6/12)',valor:189.80},
+          {desc:'Panvel Farmácia',valor:18.27},
+          {desc:'Drogaria Cat',valor:12.99},
+          {desc:'Pasquali Amp',valor:0.20}
+        ]
+      },
+      {
+        nome: 'Diversos',
+        icon: '📦',
+        valor: 858.52,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Angeloni - Máq. Lavar (parc 2/8)',valor:464.75},
+          {desc:'Google One (2×)',valor:99.98},
+          {desc:'MP MeliMais',valor:19.90},
+          {desc:'Avatim Cheir',valor:160.10},
+          {desc:'Primor',valor:44.00},
+          {desc:'Uber One Membership',valor:19.90},
+          {desc:'Bubble Mix T',valor:20.00},
+          {desc:'Posto (outros)',valor:29.89}
+        ]
+      }
+    ]
+  },
+  visa_abr: {
+    titulo: 'Itaú Visa Infinite — Abril 2026',
+    total: 28226.06,
+    vencimento: '06/04/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '4110.XXXX.XXXX.0530 Visa Infinite',
+    categorias: [
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 5780.00,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Moacir Maba (refeições/dia)',valor:1759.46},
+          {desc:'Giassi Super (2x)',valor:745.73},
+          {desc:'Risotteria de A a Z (2x)',valor:436.70},
+          {desc:'Cantina Italiana',valor:403.00},
+          {desc:'Amazon BR (alimentos)',valor:211.30},
+          {desc:'Pasquali Ref (3x)',valor:187.17},
+          {desc:'Rancho Mexicana + Giuseppe',valor:283.96},
+          {desc:'Joinville Comercio e T',valor:115.00},
+          {desc:'Mercado Bras + Panificadora',valor:162.15},
+          {desc:'Smania + MgGelateria (4x)',valor:135.98},
+          {desc:'KfluzComerci',valor:85.80},
+          {desc:'Havanna + Ponto Bourbo',valor:109.56},
+          {desc:'Oh My Bread',valor:87.00},
+          {desc:'Art Cafe + Dona Torta',valor:89.00},
+          {desc:'Bubble Mix Tea (3x)',valor:60.00},
+          {desc:'Pira Pizza + MC Donalds',valor:114.50},
+          {desc:'Rei dos Sabores (3x)',valor:45.50},
+          {desc:'Angeloni + Mercado Juli',valor:230.50},
+          {desc:'Cacau Show + Feng Cheng',valor:74.28},
+          {desc:'CCBS Cafeteria + Porao da Lig',valor:124.00},
+          {desc:'Frida Infantil',valor:4.00}
+        ]
+      },
+      {
+        nome: 'Turismo / Hobbies',
+        icon: '✈️',
+        valor: 7150.00,
+        cor: '#f97316',
+        itens: [
+          {desc:'Decolar (3 parcelas)',valor:1838.34},
+          {desc:'LATAM Air (2 parcelas)',valor:737.34},
+          {desc:'Antunes Comercio (parc 3/10)',valor:924.80},
+          {desc:'AgenciaEros (parc 5/8)',valor:777.50},
+          {desc:'DM Rentcars (parc 3/3)',valor:461.97},
+          {desc:'Centauro 5x (esportes)',valor:424.97},
+          {desc:'AEA Join 3x (pesca/hobby)',valor:538.04},
+          {desc:'Ingressos GT (4x)',valor:230.00},
+          {desc:'World Tennis / Estok (parc)',valor:343.88},
+          {desc:'JL MT (turismo)',valor:229.00},
+          {desc:'Mueller (shopping)',valor:74.00},
+          {desc:'Decathlon (parc 2/6)',valor:101.68},
+          {desc:'Agroceza + Agropecuaria',valor:410.50},
+          {desc:'Mimei Banho e T / Cobasi (pet)',valor:329.90},
+          {desc:'Clube LATAM Pass',valor:40.90}
+        ]
+      },
+      {
+        nome: 'Moradia / Casa',
+        icon: '🏠',
+        valor: 4130.00,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'ZP Maeara - Obra (2 parc)',valor:4000.00},
+          {desc:'58741783Danieli (parc 4/4)',valor:865.00},
+          {desc:'Jim.com Marmoraria (2 parc)',valor:1150.00},
+          {desc:'Vendrami Servicos (3x)',valor:471.29},
+          {desc:'PG Leroy Merlin (parc 6/8)',valor:390.30},
+          {desc:'Cidadania JA (parc 5/10)',valor:850.00},
+          {desc:'Jim.com Luciane (2 parc)',valor:350.34},
+          {desc:'EC 4Produtos (parc 5/12)',valor:109.57},
+          {desc:'Cassol',valor:24.90}
+        ]
+      },
+      {
+        nome: 'Vestuário',
+        icon: '👗',
+        valor: 6060.00,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'Amazon Samsung Galaxy (2 parc)',valor:4549.00},
+          {desc:'Lojas Colombo (2 parc)',valor:296.00},
+          {desc:'Elegancia Di (2 parc)',valor:253.30},
+          {desc:'PayU Adidas (2 parc)',valor:260.16},
+          {desc:'Sephora Camb (2 parc)',valor:179.00},
+          {desc:'MR Comercio (parc 3/3)',valor:108.34},
+          {desc:'00110 SH Camboriu (2 parc)',valor:129.80},
+          {desc:'Milon Shoppi',valor:139.41},
+          {desc:'Schutz (parc 9/9)',valor:103.35},
+          {desc:'00006 SH Joinville',valor:39.90}
+        ]
+      },
+      {
+        nome: 'Saude',
+        icon: '💊',
+        valor: 1270.00,
+        cor: '#f87171',
+        itens: [
+          {desc:'DVA Pneus (parc 1/6 e 2/6)',valor:516.70},
+          {desc:'Amazon Cirurgico (2 parc)',valor:235.26},
+          {desc:'Depil House',valor:147.00},
+          {desc:'HDI Seguros SA',valor:82.95},
+          {desc:'Drogaria Cat + Drogasil (3x)',valor:121.00},
+          {desc:'Panvel + Farmacia (3x)',valor:80.92},
+          {desc:'Unimed (3x)',valor:24.00}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 1840.00,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Posto Rudnic (6x)',valor:763.46},
+          {desc:'Posto FL (2 postos)',valor:431.96},
+          {desc:'AutoBarigui (parc 3/4)',valor:455.50},
+          {desc:'Uber * Pending (4x)',valor:167.86},
+          {desc:'Despachante Mira (2 parc)',valor:191.36},
+          {desc:'Allpark',valor:5.00}
+        ]
+      },
+      {
+        nome: 'Diversos',
+        icon: '📦',
+        valor: 2000.00,
+        cor: '#9a9690',
+        itens: [
+          {desc:'ZP Maeara 2a parc (extra)',valor:0},
+          {desc:'Amazon Marketplace (varios)',valor:436.49},
+          {desc:'MLP Epoca Cosmeti (2 parc)',valor:390.42},
+          {desc:'App LGAuthentic (2 parc)',valor:202.86},
+          {desc:'Amazon JCMNI (2 parc)',valor:338.78},
+          {desc:'MercadoLivre (2 parc)',valor:173.90},
+          {desc:'ItauShop (parc)',valor:194.90},
+          {desc:'Loccitane',valor:114.80},
+          {desc:'Sempre de Samsung (parc)',valor:144.90},
+          {desc:'AmazonMktplc Megab (parc)',valor:166.40},
+          {desc:'Fernanda Fer + Megapix',valor:81.00},
+          {desc:'Gototem + DL Google',valor:74.90},
+          {desc:'VSKE Industr',valor:27.85}
+        ]
+      }
+    ]
+  }
+};
+
+function handleFatClick(e){
+  var el=e.target.closest('[data-fat]');
+  if(el) openFatura(el.getAttribute('data-fat'));
+}
+
+function openFatura(key){
+  var f=faturas[key];
+  if(!f) return;
+  var existing=document.getElementById('fi-overlay');
+  if(existing) existing.remove();
+
+  var overlay=document.createElement('div');
+  overlay.id='fi-overlay';
+  overlay.innerHTML='<div class="fi-modal-overlay"></div>';
+  document.body.appendChild(overlay);
+
+  var modal=document.createElement('div');
+  modal.className='fi-modal';
+  overlay.firstChild.appendChild(modal);
+
+  // Header
+  var hdr=document.createElement('div');
+  hdr.className='fi-modal-header';
+  hdr.innerHTML='<div><div class="fi-modal-title">'+f.titulo+'</div><div class="fi-modal-sub">'+f.cartao+' &middot; Venc. '+f.vencimento+'</div></div>';
+  var btn=document.createElement('button');
+  btn.className='fi-close';
+  btn.textContent='✕';
+  btn.onclick=function(){overlay.remove();};
+  hdr.appendChild(btn);
+  modal.appendChild(hdr);
+
+  // Total row
+  var totRow=document.createElement('div');
+  totRow.className='fi-total-row';
+  totRow.innerHTML='<span class="fi-total-label">Total da fatura</span><span class="fi-total-val">R$ '+f.total.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</span>';
+  modal.appendChild(totRow);
+
+  // Categories
+  var catsDiv=document.createElement('div');
+  catsDiv.className='fi-cats';
+  f.categorias.forEach(function(c){
+    var pct=((c.valor/f.total)*100).toFixed(1);
+    var cat=document.createElement('div');
+    cat.className='fi-cat';
+
+    var hdrCat=document.createElement('div');
+    hdrCat.className='fi-cat-header';
+    hdrCat.innerHTML=
+      '<span class="fi-cat-icon">'+c.icon+'</span>'+
+      '<span class="fi-cat-nome">'+c.nome+'</span>'+
+      '<div class="fi-cat-right">'+
+        '<span class="fi-cat-val">R$ '+c.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</span>'+
+        '<span class="fi-cat-pct">'+pct+'%</span>'+
+        '<span class="fi-chevron">&#x203A;</span>'+
+      '</div>';
+    hdrCat.onclick=function(){
+      cat.classList.toggle('open');
+      var chev=cat.querySelector('.fi-chevron');
+      chev.innerHTML=cat.classList.contains('open')?'&#x2304;':'&#x203A;';
+    };
+    cat.appendChild(hdrCat);
+
+    var bar=document.createElement('div');
+    bar.className='fi-bar-wrap';
+    var barInner=document.createElement('div');
+    barInner.className='fi-bar';
+    barInner.style.width=pct+'%';
+    barInner.style.background=c.cor;
+    bar.appendChild(barInner);
+    cat.appendChild(bar);
+
+    var itensDiv=document.createElement('div');
+    itensDiv.className='fi-items';
+    c.itens.forEach(function(it){
+      var item=document.createElement('div');
+      item.className='fi-item';
+      item.innerHTML='<span class="fi-item-desc">'+it.desc+'</span><span class="fi-item-val">R$ '+it.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</span>';
+      itensDiv.appendChild(item);
+    });
+    cat.appendChild(itensDiv);
+    catsDiv.appendChild(cat);
+  });
+  modal.appendChild(catsDiv);
+
+  // Close on overlay click
+  overlay.firstChild.onclick=function(e){
+    if(e.target===overlay.firstChild) overlay.remove();
+  };
+}
+
+
+
+</script>
+</body>
+</html>
