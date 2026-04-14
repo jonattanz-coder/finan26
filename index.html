@@ -302,6 +302,30 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .fatura-link{color:var(--blue);cursor:pointer;text-decoration:underline;font-size:10px;display:inline-block;margin-top:2px;}
 .fatura-link:hover{color:var(--text);}
 
+
+/* -- CARTOES DASHBOARD -- */
+.cart-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.cart-filters .fsel{flex:1;min-width:120px;}
+.cart-total-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.cart-total-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;}
+.cart-total-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:var(--text);}
+.cart-cats-wrap{display:flex;flex-direction:column;gap:10px;padding:4px 0;}
+.cart-cat-row{display:grid;grid-template-columns:130px 1fr 110px;align-items:center;gap:8px;}
+.cart-cat-label{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);}
+.cart-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cart-cat-bar-wrap{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.cart-cat-bar{height:100%;border-radius:3px;transition:width .4s;}
+.cart-cat-vals{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+.cart-cat-pct{font-size:10px;color:var(--text3);min-width:36px;text-align:right;}
+.cart-cat-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);text-align:right;min-width:60px;}
+.cart-cards-wrap{display:flex;flex-direction:column;gap:10px;padding:4px 0;}
+.cart-card-item{display:grid;grid-template-columns:110px 1fr 80px;align-items:center;gap:8px;}
+.cart-card-name{font-size:11px;color:var(--text);}
+.cart-parc-table{width:100%;border-collapse:collapse;}
+.cart-parc-table th{background:var(--bg3);padding:6px 8px;text-align:left;font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);}
+.cart-parc-table td{padding:6px 8px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);}
+.cart-parc-desc{color:var(--text);font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px;}
 </style>
@@ -671,6 +695,70 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 
     </div><!-- /page-objetivos -->
 
+
+    <!-- CARTOES DASHBOARD -->
+    <div class="page" id="page-cartoes">
+      <div class="cart-filters">
+        <select class="fsel" id="cart-mes" onchange="renderCartoes()">
+          <option value="todos">Todos os meses</option>
+          <option value="Dez/25">Dezembro 2025</option>
+          <option value="Jan/26">Janeiro 2026</option>
+          <option value="Fev/26">Fevereiro 2026</option>
+          <option value="Abr/26">Abril 2026</option>
+        </select>
+        <select class="fsel" id="cart-cartao" onchange="renderCartoes()">
+          <option value="todos">Todos os cartões</option>
+          <option value="Master Black">Master Black</option>
+          <option value="Visa Infinite">Visa Infinite</option>
+        </select>
+        <select class="fsel" id="cart-titular" onchange="renderCartoes()">
+          <option value="todos">Todos os titulares</option>
+          <option value="Jonattam">Jonattam</option>
+          <option value="Jonattam / Alessandra">Jonattam / Alessandra</option>
+        </select>
+        <select class="fsel" id="cart-parc" onchange="renderCartoes()">
+          <option value="todos">Todos os gastos</option>
+          <option value="parc">Só parcelados</option>
+          <option value="inter">Só internacionais</option>
+        </select>
+      </div>
+
+      <!-- Total geral -->
+      <div class="cart-total-card">
+        <div class="cart-total-label">Total no período</div>
+        <div class="cart-total-val" id="cart-total">R$ 0</div>
+      </div>
+
+      <!-- Por categoria -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">📊</span>
+          <div>
+            <div class="obj-section-title">Gastos por Categoria</div>
+          </div>
+        </div>
+        <div class="cart-cats-wrap" id="cart-cats"></div>
+      </div>
+
+      <!-- Por cartão -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">💳</span>
+          <div><div class="obj-section-title">Por Cartão</div></div>
+        </div>
+        <div class="cart-cards-wrap" id="cart-cards"></div>
+      </div>
+
+      <!-- Compras parceladas / internacionais -->
+      <div class="obj-section">
+        <div class="obj-section-header">
+          <span class="obj-icon">📋</span>
+          <div><div class="obj-section-title">Compras Parceladas / Internacionais</div></div>
+        </div>
+        <div class="plan-table-wrap" id="cart-parceladas"></div>
+      </div>
+    </div><!-- /page-cartoes -->
+
   </div><!-- /content -->
 
   <!-- BOTTOM NAV -->
@@ -690,6 +778,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
     <button class="botnav-item" id="nav-obj" onclick="showPage('objetivos')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
       Objetivos
+    </button>
+    <button class="botnav-item" id="nav-cart" onclick="showPage('cartoes')">
+      <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Cartões
     </button>
   </nav>
 
@@ -728,15 +820,15 @@ function doLogin(){
 }
 
 // -- NAV ------------------------------------------
-var pageNames={dashboard:'Dashboard',calendario:'Calendário',lanc:'Lançamentos',objetivos:'Objetivos 2026'};
+var pageNames={dashboard:'Dashboard',calendario:'Calendário',lanc:'Lançamentos',objetivos:'Objetivos 2026',cartoes:'Cartões'};
 
 function showPage(p){
   document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
   document.getElementById('page-'+p).classList.add('active');
-  ['dash','cal','lanc','obj'].forEach(function(id){
+  ['dash','cal','lanc','obj','cart'].forEach(function(id){
     document.getElementById('nav-'+id).classList.remove('active');
   });
-  var map={dashboard:'dash',calendario:'cal',lanc:'lanc',objetivos:'obj'};
+  var map={dashboard:'dash',calendario:'cal',lanc:'lanc',objetivos:'obj',cartoes:'cart'};
   if(map[p]) document.getElementById('nav-'+map[p]).classList.add('active');
   document.getElementById('topbar-title').textContent=pageNames[p];
   if(p==='calendario') renderCalendar();
@@ -1010,11 +1102,11 @@ var lancamentos={
     {data:'01/jan',motivo:'Iof Caixa',forma:'conta',receita:0,despesa:71.19,status:'Pago',saldo:4910.38},
     {data:'02/jan',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:114.19,status:'Pago',saldo:4796.19},
     {data:'12/jan',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:102.2,status:'Pago',saldo:4693.99},
-    {data:'05/jan',motivo:'Itau Master',forma:'cartão',receita:0,despesa:6130.59,status:'Pago',saldo:-1436.6},
+    {data:'05/jan',motivo:'Itau Master',forma:'cartão',receita:0,despesa:6130.59,status:'Pago',fatura:'master_dez25',saldo:-1436.6},
     {data:'05/jan',motivo:'Iof itau',forma:'conta',receita:0,despesa:150.34,status:'Pago',saldo:-1586.94},
     {data:'05/jan',motivo:'Pix gilson leandro',forma:'pix',receita:0,despesa:150.0,status:'Pago',saldo:-1736.94},
     {data:'06/jan',motivo:'Purpurata - Salário',forma:'conta',receita:7170.0,despesa:0,status:'Pago',saldo:5433.06},
-    {data:'06/jan',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:24062.29,status:'Pago',saldo:-18629.23},
+    {data:'06/jan',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:24062.29,status:'Pago',fatura:'visa_dez25',saldo:-18629.23},
     {data:'07/jan',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1590.0,status:'Pago',saldo:-20219.23},
     {data:'07/jan',motivo:'Diarista',forma:'conta',receita:0,despesa:840.0,status:'Pago',saldo:-21059.23},
     {data:'07/jan',motivo:'Telefonia (TIM AZ)',forma:'boleto',receita:0,despesa:60.0,status:'Pago',saldo:-21119.23},
@@ -1052,10 +1144,10 @@ var lancamentos={
     {data:'01/fev',motivo:'Iof STD',forma:'conta',receita:0,despesa:655.79,status:'Pago',saldo:30911.38},
     {data:'01/fev',motivo:'Iof Caixa',forma:'conta',receita:0,despesa:37.33,status:'Pago',saldo:30874.05},
     {data:'03/fev',motivo:'Porto Seguro',forma:'conta',receita:0,despesa:115.0,status:'Pago',saldo:30759.05},
-    {data:'05/fev',motivo:'Itau Master',forma:'cartão',receita:0,despesa:9940.0,status:'Pago',saldo:20819.05},
+    {data:'05/fev',motivo:'Itau Master',forma:'cartão',receita:0,despesa:9939.48,status:'Pago',fatura:'master_jan',saldo:20819.05},
     {data:'05/fev',motivo:'Iof itau',forma:'conta',receita:0,despesa:125.0,status:'Pago',saldo:20694.05},
     {data:'05/fev',motivo:'Pix formiga',forma:'pix',receita:0,despesa:600.0,status:'Pago',saldo:20094.05},
-    {data:'06/fev',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:13362.0,status:'Pago',saldo:6732.05},
+    {data:'06/fev',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:13362.49,status:'Pago',fatura:'visa_jan',saldo:6732.05},
     {data:'06/fev',motivo:'Móveis',forma:'boleto',receita:0,despesa:3100.0,status:'Pago',saldo:3632.05},
     {data:'07/fev',motivo:'Purpurata - Salário',forma:'conta',receita:7727.0,despesa:0,status:'Pago',saldo:11359.05},
     {data:'07/fev',motivo:'Escola (Bonja)',forma:'boleto',receita:0,despesa:1707.0,status:'Pago',saldo:9652.05},
@@ -1095,8 +1187,8 @@ var lancamentos={
     {data:'02/mar',motivo:'Jardim',forma:'pix',receita:0,despesa:200.0,status:'Pago',saldo:17920.05},
     {data:'03/mar',motivo:'Pix Dentista',forma:'pix',receita:0,despesa:250.0,status:'Pago',saldo:17670.05},
     {data:'04/mar',motivo:'Seguro Caixa',forma:'conta',receita:0,despesa:106.0,status:'Pago',saldo:17564.05},
-    {data:'05/mar',motivo:'Itau Master',forma:'cartão',receita:0,despesa:5820.0,status:'Pago',saldo:11744.05},
-    {data:'06/mar',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:29344.0,status:'Pago',saldo:-17599.95},
+    {data:'05/mar',motivo:'Itau Master',forma:'cartão',receita:0,despesa:5819.69,status:'Pago',fatura:'master_fev',saldo:11744.05},
+    {data:'06/mar',motivo:'Itau Visa',forma:'cartão',receita:0,despesa:29344.37,status:'Pago',fatura:'visa_fev',saldo:-17599.95},
     {data:'06/mar',motivo:'Móveis',forma:'boleto',receita:0,despesa:3100.0,status:'Pago',saldo:-20699.95},
     {data:'06/mar',motivo:'Ambiental - Lixo',forma:'conta',receita:0,despesa:162.85,status:'Pago',saldo:-20862.8},
     {data:'07/mar',motivo:'Compras Purpurata',forma:'conta',receita:0,despesa:90.0,status:'Pago',saldo:-20952.8},
@@ -1591,6 +1683,566 @@ function buildCharts(){
 
 // -- FATURAS DATA ----------------------------------
 var faturas = {
+  master_dez25: {
+    titulo: 'Itaú Master Black — Dezembro 2025',
+    total: 6130.59,
+    vencimento: '05/01/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '5234.XXXX.XXXX.8221',
+    categorias: [
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 2548.81,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Angeloni + supermercados (varios)',valor:963.0},
+          {desc:'Oh My Bread (2x)',valor:166.0},
+          {desc:'Supermercado VA ES (3x)',valor:481.75},
+          {desc:'Mercado Julio Pedro',valor:212.79},
+          {desc:'Pasquali Ref (varios)',valor:160.0},
+          {desc:'Smania (2x)',valor:170.0},
+          {desc:'Bubble Mix Tea + Primor',valor:44.0},
+          {desc:'Cacau Show (2x)',valor:89.97},
+          {desc:'Fruver + Emporio',valor:71.3},
+          {desc:'Padaria + outros',valor:190.0}
+        ]
+      },
+      {
+        nome: 'Turismo / Lazer',
+        icon: '✈️',
+        valor: 2200.72,
+        cor: '#f97316',
+        itens: [
+          {desc:'Royal Caribbean parc 3/10',valor:1453.71},
+          {desc:'LATAM Travel parc 10/10',valor:344.72},
+          {desc:'Amazon Prime Canais (2x)',valor:74.9},
+          {desc:'Organizze TE',valor:199.9},
+          {desc:'Centauro parc 2/2',valor:127.49}
+        ]
+      },
+      {
+        nome: 'Assinaturas / Diversos',
+        icon: '📦',
+        valor: 1037.79,
+        cor: '#9a9690',
+        itens: [
+          {desc:'Allianz Seguro parc 4/10',valor:229.37},
+          {desc:'Netflix (2x)',valor:119.8},
+          {desc:'Google One + YouTube',valor:68.89},
+          {desc:'EC Melimais + Uber One',valor:39.8},
+          {desc:'Amazon BR',valor:128.3},
+          {desc:'TagItaú pedágio (4x)',valor:209.6},
+          {desc:'Dafiti parc 2/2',valor:242.03}
+        ]
+      },
+      {
+        nome: 'Vestuário',
+        icon: '👗',
+        valor: 220.0,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'Live Store + Youcom + Americanas',valor:220.0}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 194.1,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'TagItaú pedágio (varios)',valor:159.6},
+          {desc:'Posto Rudnic',valor:34.5}
+        ]
+      },
+      {
+        nome: 'Saúde',
+        icon: '💊',
+        valor: 137.27,
+        cor: '#f87171',
+        itens: [
+          {desc:'Drogaria Sao Paulo',valor:102.77},
+          {desc:'Posto Rudnic-CT BRAPE',valor:34.5}
+        ]
+      }
+    ]
+  },
+  master_jan: {
+    titulo: 'Itaú Master Black — Janeiro 2026',
+    total: 9939.48,
+    vencimento: '05/02/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '5234.XXXX.XXXX.8221',
+    categorias: [
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 3599.0,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Angeloni (varios)',valor:1090.0},
+          {desc:'Oh My Bread (3x)',valor:159.0},
+          {desc:'Supermercado VA ES (4x)',valor:460.0},
+          {desc:'Sabor do Pao + padaria (varios)',valor:120.0},
+          {desc:'Moacir Maba JVL',valor:200.0},
+          {desc:'Peixaria + restaurantes Sao Francisco',valor:300.0},
+          {desc:'Baggio + restaurantes JVL',valor:300.0},
+          {desc:'Mercado Brasilia + Fruver',valor:280.0},
+          {desc:'Condor + Primor + outros',valor:210.0},
+          {desc:'Smania + Emporio Pani',valor:100.0},
+          {desc:'Supermercado Sao Francisco',valor:380.0}
+        ]
+      },
+      {
+        nome: 'Turismo — Cruzeiro (pre-embarque)',
+        icon: '✈️',
+        valor: 4078.19,
+        cor: '#f97316',
+        itens: [
+          {desc:'Royal Caribbean BR - Parcelas inter. (2x)',valor:2434.68},
+          {desc:'Royal Caribbean parc 4/10',valor:1453.71},
+          {desc:'Academia Ritmo parc 3/12',valor:189.8}
+        ]
+      },
+      {
+        nome: 'Saúde',
+        icon: '💊',
+        valor: 517.55,
+        cor: '#f87171',
+        itens: [
+          {desc:'Farmacia Preco Popular (3x)',valor:197.33},
+          {desc:'Farmacia Enseada',valor:51.35},
+          {desc:'Farmafran',valor:39.5},
+          {desc:'Allianz Seguro parc 5/10',valor:229.37}
+        ]
+      },
+      {
+        nome: 'Assinaturas / Diversos',
+        icon: '📦',
+        valor: 731.3,
+        cor: '#9a9690',
+        itens: [
+          {desc:'Amazon MktplcEzoomark + Amazon',valor:250.0},
+          {desc:'AmazonPrimeBR',valor:166.8},
+          {desc:'Google One + YouTube + Netflix',valor:128.8},
+          {desc:'Uber One + MeLimais + EC Melimais',valor:59.7},
+          {desc:'HB Servicos',valor:126.0}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 242.0,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'TagItaú pedágio (2x)',valor:100.0},
+          {desc:'Posto Rudnic',valor:42.0},
+          {desc:'Auto Posto L',valor:100.0}
+        ]
+      },
+      {
+        nome: 'Lazer / Hobby',
+        icon: '🎯',
+        valor: 576.99,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'Alles Bike parc 10/10',valor:319.0},
+          {desc:'Centauro CE1 parc 4/4',valor:74.99},
+          {desc:'AgoCeza + Cobasi',valor:183.0},
+          {desc:'PPRO Microsoft + estorno',valor:0.0}
+        ]
+      }
+    ]
+  },
+  master_fev: {
+    titulo: 'Itaú Master Black — Fevereiro 2026',
+    total: 5819.69,
+    vencimento: '05/03/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '5234.XXXX.XXXX.8221',
+    categorias: [
+      {
+        nome: 'Cruzeiro — Royal Caribbean (inter)',
+        icon: '✈️',
+        valor: 4285.05,
+        cor: '#f97316',
+        itens: [
+          {desc:'RCL Oasis Of The Seas (inter)',valor:2356.36},
+          {desc:'Pizza Moon + CAF Sirene — Orlando (inter)',valor:236.32},
+          {desc:'Ross Stores — compras (inter)',valor:238.66},
+          {desc:'Royal Caribbean parc 5/10',valor:1453.71}
+        ]
+      },
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 704.06,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Supermercado VA ES (3x)',valor:543.06},
+          {desc:'Angeloni Far 94',valor:81.0},
+          {desc:'Pasquali Ref + outros',valor:80.0}
+        ]
+      },
+      {
+        nome: 'Transporte / Seguros',
+        icon: '🚗',
+        valor: 450.15,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Tokio Marine Auto parc 1/10',valor:220.78},
+          {desc:'Allianz Seguro parc 6/10',valor:229.37}
+        ]
+      },
+      {
+        nome: 'Lazer / Assinaturas',
+        icon: '🎬',
+        valor: 343.4,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'Academia Ritmo parc 4/12',valor:189.8},
+          {desc:'YouTube Premium',valor:53.9},
+          {desc:'Netflix',valor:59.9},
+          {desc:'Uber One + MP Melimais',valor:39.8}
+        ]
+      },
+      {
+        nome: 'Vestuário — EUA (inter)',
+        icon: '👗',
+        valor: 178.1,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'GAP Outlet — Sunrise FL (inter)',valor:178.1},
+          {desc:"Victoria's Secret — Sunrise FL (inter)",valor:49.45}
+        ]
+      },
+      {
+        nome: 'Diversos',
+        icon: '📦',
+        valor: 0.0,
+        cor: '#9a9690',
+        itens: [
+          {desc:'Organizze TE estorno',valor:-199.9}
+        ]
+      }
+    ]
+  },
+  visa_dez25: {
+    titulo: 'Itaú Visa Infinite — Dezembro 2025',
+    total: 24062.29,
+    vencimento: '06/01/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '4110.XXXX.XXXX.0530',
+    categorias: [
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 5451.9,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Moacir Maba (muitos)',valor:900.0},
+          {desc:'Pasquali Ref + Smania (muitos)',valor:900.0},
+          {desc:'Angeloni + Mercado Bras (varios)',valor:700.0},
+          {desc:'Restaurantes JVL (varios)',valor:900.0},
+          {desc:'Restaurantes Curitiba (varios)',valor:400.0},
+          {desc:'Maya Sushi',valor:471.9},
+          {desc:'Bubble Mix + Art Cafe',valor:100.0},
+          {desc:'EEP Pizzaria + Hamburgues',valor:430.0},
+          {desc:'KIBS + Condor + outros',valor:650.0}
+        ]
+      },
+      {
+        nome: 'Turismo / Lazer',
+        icon: '✈️',
+        valor: 2364.9,
+        cor: '#f97316',
+        itens: [{desc:'Decolar parc 1/12',valor:828.14},
+                              {desc:'NVE Rentcars parc 3/3',valor:434.46},
+          {desc:'Uber + Ingresso.com (varios)',valor:450.0},
+          {desc:'Go Panda Ing parc 3/3',valor:333.3},
+          {desc:'Alles Bike parc 9/10',valor:319.0}]
+      },
+      {
+        nome: 'Moradia / Casa',
+        icon: '🏠',
+        valor: 6126.93,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'58741783Danieli parc 1/4',valor:865.0},
+          {desc:'Engeterme (parc 2/3)',valor:666.68},
+          {desc:'PG Leroy Merlin (parc 3/8)',valor:390.3},
+          {desc:'Cidadania JA (parc 2/10)',valor:850.0},
+          {desc:'Haus Center + Ilumina (varios)',valor:571.0},
+          {desc:'EC 4Produtos (parc 2/12)',valor:109.57},
+          {desc:'MercadoLivre Casa',valor:259.98},
+          {desc:'Cassol + obras',valor:64.1},
+          {desc:'Antunes Comercio parc 1/10',valor:924.8},
+          {desc:'AgenciaEros parc 2/8',valor:777.5},
+          {desc:'Lojas Colombo parc 2/10',valor:148.0},
+          {desc:'Amazon Marketplace (varios)',valor:500.0}
+        ]
+      },
+      {
+        nome: 'Vestuário',
+        icon: '👗',
+        valor: 1797.53,
+        cor: '#a78bfa',
+        itens: [{desc:'Electrolux parc 6/10',valor:869.3},
+                    {desc:'Centauro (2x)',valor:130.98},
+          {desc:'Schutz parc 6/9',valor:103.35},
+          {desc:'PayU Adidas parc 5/10',valor:130.08},
+          {desc:'Ecommerce UN Unde',valor:296.99},
+          {desc:'Live Store + Youcom FL06',valor:193.87},
+          {desc:'Pequim Lojas',valor:72.96}]
+      },
+      {
+        nome: 'Saúde',
+        icon: '💊',
+        valor: 427.28,
+        cor: '#f87171',
+        itens: [
+          {desc:'Farmacia Sao CT O',valor:111.95},
+          {desc:'Drogaria Cat + Catarinense (varios)',valor:200.0},
+          {desc:'PG Drogaraia parc 5/6',valor:115.33}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 976.89,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Posto Rudnic (muitos)',valor:800.0},
+          {desc:'JB Estacionamento + outros',valor:100.0},
+          {desc:'Monte Carlo (2x)',valor:76.89}
+        ]
+      },
+      {
+        nome: 'Diversos',
+        icon: '📦',
+        valor: 795.21,
+        cor: '#9a9690',
+        itens: [{desc:'ItauShop parc 3/12',valor:194.9},
+          {desc:'MLP Epoca Cosmeti parc 3/10',valor:195.21},
+          {desc:'Amazon JCMNI parc 3/12',valor:169.39},
+          {desc:'Loja Buettner parc 2/2',valor:152.76},
+          {desc:'HDI Seguros',valor:82.95}]
+      }
+    ]
+  },
+  visa_jan: {
+    titulo: 'Itaú Visa Infinite — Janeiro 2026',
+    total: 13362.49,
+    vencimento: '06/02/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '4110.XXXX.XXXX.0530',
+    categorias: [
+      {
+        nome: 'Turismo — Viagem EUA (pre-viagem)',
+        icon: '✈️',
+        valor: 5571.72,
+        cor: '#f97316',
+        itens: [{desc:'Booking.com Hotel — EUA (inter)',valor:3134.36},
+          {desc:'LATAM eSIM (2x inter)',valor:245.53},
+          {desc:'IbisGuarulhos (2x) — conexao',valor:626.35},
+          {desc:'Decolar parc 2/12',valor:828.14},
+          {desc:'LATAM Air (2x parc 4/10)',valor:737.34}]
+      },
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 2732.19,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Moacir Maba (varios)',valor:490.0},
+          {desc:'Pasquali Ref (varios)',valor:450.0},
+          {desc:'Angeloni + Supermercados (varios)',valor:700.0},
+          {desc:'Restaurante Peia (2x)',valor:189.14},
+          {desc:'Baggio (2x)',valor:253.05},
+          {desc:'Restaurantes Sao Francisco (varios)',valor:350.0},
+          {desc:'Outros alim / padaria',valor:300.0}
+        ]
+      },
+      {
+        nome: 'Moradia / Casa',
+        icon: '🏠',
+        valor: 5085.41,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'AgenciaEros parc 3/8',valor:777.5},
+          {desc:'Engeterme parc 3/3',valor:333.34},
+          {desc:'58741783Danieli parc 2/4',valor:865.0},
+          {desc:'PG Leroy Merlin (parc 4/8)',valor:390.3},
+          {desc:'Cidadania JA (parc 3/10)',valor:850.0},
+          {desc:'EC 4Produtos (parc 3/12)',valor:109.57},
+          {desc:'MercadoLivre Casa',valor:234.9},
+          {desc:'Antunes Comercio parc 2/10',valor:924.8},
+          {desc:'Amazon Marketplace (varios)',valor:600.0}]
+      },
+      {
+        nome: 'Vestuário',
+        icon: '👗',
+        valor: 665.14,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'MR Comercio (parc 1/3 e 1/2)',valor:150.79},
+          {desc:'Livraria Vir parc 1/2',valor:89.9},
+          {desc:'212 Liv CTBA parc 2/2',valor:86.75},
+          {desc:'Farmafran (parc 1/2)',valor:124.45},
+          {desc:'Lupomueller (varios)',valor:213.25}
+        ]
+      },
+      {
+        nome: 'Saúde',
+        icon: '💊',
+        valor: 416.56,
+        cor: '#f87171',
+        itens: [
+          {desc:'Drogaria Catarinense (3x)',valor:260.05},
+          {desc:'Farmacia Sao CT O parc 2/2',valor:79.48},
+          {desc:'Farmafran CT',valor:48.4},
+          {desc:'Drogaria Cat',valor:28.63}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 563.0,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Uber * Pending + Trip (varios)',valor:200.0},
+          {desc:'Posto Rudnic (2x)',valor:345.0},
+          {desc:'UNO PARK',valor:18.0}
+        ]
+      },
+      {
+        nome: 'Diversos',
+        icon: '📦',
+        valor: 720.14,
+        cor: '#9a9690',
+        itens: [
+                    {desc:'Dufry Lojas Francas',valor:401.08},
+          {desc:'HDI Seguros SA',valor:82.95},
+          {desc:'Clube LATAM Pass',valor:40.9},
+          {desc:'MLP Epoca Cosmeti',valor:195.21}
+        ]
+      }
+    ]
+  },
+  visa_fev: {
+    titulo: 'Itaú Visa Infinite — Fevereiro 2026',
+    total: 29344.37,
+    vencimento: '06/03/2026',
+    titular: 'Jonattam / Alessandra',
+    cartao: '4110.XXXX.XXXX.0530',
+    categorias: [
+      {
+        nome: 'Viagem EUA — Compras / Lazer',
+        icon: '✈️',
+        valor: 9588.5,
+        cor: '#f97316',
+        itens: [
+          {desc:'Calvin Klein — Orlando',valor:1832.58},
+          {desc:'Nike + Columbia + Schutz + Victoria',valor:950.0},
+          {desc:'TJMAXX + Bath Body + Vitamin World',valor:1150.0},
+          {desc:'Walmart + H Mart — mercado EUA',valor:1126.54},
+          {desc:'Hertz Car Rental — aluguel',valor:716.39},
+          {desc:'Shake Shack (3x) + Red Lobster',valor:820.0},
+          {desc:'Nathan Famous + Popeyes + Starbucks (varios)',valor:500.0},
+          {desc:'WDW Disney (ingressos + restaurantes)',valor:300.0},
+          {desc:'Beauty Master FL + salao',valor:405.08},
+          {desc:'Uber trips EUA (5x)',valor:1085.64},
+          {desc:'Walgreens + Wawa + Target',valor:320.0},
+          {desc:'IOF internacional',valor:382.27}
+        ]
+      },
+      {
+        nome: 'Turismo / Nacional',
+        icon: '✈️',
+        valor: 1855.57,
+        cor: '#f97316',
+        itens: [{desc:'Decolar parc 3/12',valor:828.14},
+                              {desc:'Dufry Lojas Francas — aeroporto',valor:401.08},
+          {desc:'IbisGuarulhos (2x) — conexao',valor:626.35}]
+      },
+      {
+        nome: 'Alimentação / Mercado',
+        icon: '🛒',
+        valor: 2792.0,
+        cor: '#4ade80',
+        itens: [
+          {desc:'Moacir Maba (muitos)',valor:800.0},
+          {desc:'Pasquali Ref (muitos)',valor:350.0},
+          {desc:'Angeloni + Supermercados',valor:500.0},
+          {desc:'Oh My Bread (3x)',valor:192.0},
+          {desc:'Restaurantes JVL (varios)',valor:700.0},
+          {desc:'Bubble Mix + Art Cafe + Pira Pizza',valor:250.0}
+        ]
+      },
+      {
+        nome: 'Moradia / Casa',
+        icon: '🏠',
+        valor: 5810.91,
+        cor: '#60a5fa',
+        itens: [
+          {desc:'AgenciaEros parc 4/8',valor:777.5},
+          {desc:'Engeterme parc 3/3',valor:333.34},
+          {desc:'58741783Danieli parc 3/4',valor:865.0},
+          {desc:'PG Leroy Merlin (parc 5/8)',valor:390.3},
+          {desc:'Cidadania JA (parc 4/10)',valor:850.0},
+          {desc:'EC 4Produtos (parc 4/12)',valor:109.57},
+          {desc:'MercadoLivre Casa',valor:234.9},
+          {desc:'Antunes Comercio parc 3/10',valor:924.8},
+          {desc:'AgenciaEros parc 4/8',valor:777.5},
+          {desc:'Lojas Colombo parc 4/10',valor:148.0},
+          {desc:'Amazon Marketplace (varios)',valor:400.0}
+        ]
+      },
+      {
+        nome: 'Vestuário',
+        icon: '👗',
+        valor: 725.36,
+        cor: '#a78bfa',
+        itens: [{desc:'MLP Epoca Cosmeti',valor:195.21},
+          {desc:'Amazon JCMNI parc 5/12',valor:169.39},
+          {desc:'Farmafran parc 2/2',valor:124.45},
+          {desc:'Lupomueller',valor:138.8},
+          {desc:'Centauro CE1 parc 3/4',valor:97.51}]
+      },
+      {
+        nome: 'Saude',
+        icon: '💊',
+        valor: 324.51,
+        cor: '#f87171',
+        itens: [
+          {desc:'Drogaria Catarinense (3x)',valor:141.09},
+          {desc:'Farmacia Sao CT O parc 2/2',valor:79.48},
+          {desc:'Drogaria Cat',valor:20.99},
+          {desc:'HDI Seguros SA',valor:82.95}
+        ]
+      },
+      {
+        nome: 'Transporte',
+        icon: '🚗',
+        valor: 841.98,
+        cor: '#fbbf24',
+        itens: [
+          {desc:'Posto Rudnic (muitos)',valor:700.0},
+          {desc:'Auto Posto O DEA LT',valor:41.98},
+          {desc:'Uber * Pending (varios)',valor:100.0}
+        ]
+      },
+      {
+        nome: 'Assinaturas / Diversos',
+        icon: '📦',
+        valor: 185.8,
+        cor: '#9a9690',
+        itens: [{desc:'Sempre Samsung parc 2/21',valor:144.9},
+                    {desc:'Clube LATAM Pass',valor:40.9}]
+      }
+    ]
+  }
+,
   master_abr: {
     titulo: 'Itaú Master — Abril 2026',
     total: 6474.32,
@@ -1601,7 +2253,7 @@ var faturas = {
       {
         nome: 'Alimentação / Mercado',
         icon: '🛒',
-        valor: 3166.31,
+        valor: 2984.67,
         cor: '#4ade80',
         itens: [
           {desc:'Angeloni (3×)',valor:980.73},
@@ -1619,7 +2271,6 @@ var faturas = {
           {desc:'Amor Canela (2×)',valor:84.62},
           {desc:'Condor (2×)',valor:23.57},
           {desc:'Q Pastel (2×)',valor:32.50},
-          {desc:'MgGelateria',valor:29.70},
           {desc:'Cacau Show',valor:4.99},
           {desc:'EPN Restaura',valor:12.50},
           {desc:'Mercado Bras',valor:8.99},
@@ -1641,7 +2292,7 @@ var faturas = {
       {
         nome: 'Transporte',
         icon: '🚗',
-        valor: 706.05,
+        valor: 730.25,
         cor: '#60a5fa',
         itens: [
           {desc:'Allianz Seguro Auto (parc 7/10)',valor:229.37},
@@ -1655,12 +2306,13 @@ var faturas = {
       {
         nome: 'Lazer',
         icon: '🎬',
-        valor: 173.70,
+        valor: 203.4,
         cor: '#a78bfa',
         itens: [
           {desc:'Netflix (2×)',valor:119.80},
           {desc:'YouTube Premium',valor:53.90}
-        ]
+        ,
+          {desc:'MgGelateria',valor:29.70}]
       },
       {
         nome: 'Saúde',
@@ -1703,19 +2355,16 @@ var faturas = {
       {
         nome: 'Alimentação / Mercado',
         icon: '🛒',
-        valor: 5780.00,
+        valor: 4364.91,
         cor: '#4ade80',
         itens: [
           {desc:'Moacir Maba (refeições/dia)',valor:1759.46},
           {desc:'Giassi Super (2x)',valor:745.73},
-          {desc:'Risotteria de A a Z (2x)',valor:436.70},
-          {desc:'Cantina Italiana',valor:403.00},
           {desc:'Amazon BR (alimentos)',valor:211.30},
           {desc:'Pasquali Ref (3x)',valor:187.17},
           {desc:'Rancho Mexicana + Giuseppe',valor:283.96},
           {desc:'Joinville Comercio e T',valor:115.00},
           {desc:'Mercado Bras + Panificadora',valor:162.15},
-          {desc:'Smania + MgGelateria (4x)',valor:135.98},
           {desc:'KfluzComerci',valor:85.80},
           {desc:'Havanna + Ponto Bourbo',valor:109.56},
           {desc:'Oh My Bread',valor:87.00},
@@ -1725,21 +2374,16 @@ var faturas = {
           {desc:'Rei dos Sabores (3x)',valor:45.50},
           {desc:'Angeloni + Mercado Juli',valor:230.50},
           {desc:'Cacau Show + Feng Cheng',valor:74.28},
-          {desc:'CCBS Cafeteria + Porao da Lig',valor:124.00},
           {desc:'Frida Infantil',valor:4.00}
         ]
       },
       {
         nome: 'Turismo / Hobbies',
         icon: '✈️',
-        valor: 7150.00,
+        valor: 5023.18,
         cor: '#f97316',
-        itens: [
-          {desc:'Decolar (3 parcelas)',valor:1838.34},
-          {desc:'LATAM Air (2 parcelas)',valor:737.34},
-          {desc:'Antunes Comercio (parc 3/10)',valor:924.80},
-          {desc:'AgenciaEros (parc 5/8)',valor:777.50},
-          {desc:'DM Rentcars (parc 3/3)',valor:461.97},
+        itens: [{desc:'Decolar (3 parcelas)',valor:1838.34},
+                              {desc:'DM Rentcars (parc 3/3)',valor:461.97},
           {desc:'Centauro 5x (esportes)',valor:424.97},
           {desc:'AEA Join 3x (pesca/hobby)',valor:538.04},
           {desc:'Ingressos GT (4x)',valor:230.00},
@@ -1749,13 +2393,12 @@ var faturas = {
           {desc:'Decathlon (parc 2/6)',valor:101.68},
           {desc:'Agroceza + Agropecuaria',valor:410.50},
           {desc:'Mimei Banho e T / Cobasi (pet)',valor:329.90},
-          {desc:'Clube LATAM Pass',valor:40.90}
-        ]
+          {desc:'Clube LATAM Pass',valor:40.90}]
       },
       {
         nome: 'Moradia / Casa',
         icon: '🏠',
-        valor: 4130.00,
+        valor: 10646.19,
         cor: '#60a5fa',
         itens: [
           {desc:'ZP Maeara - Obra (2 parc)',valor:4000.00},
@@ -1766,31 +2409,31 @@ var faturas = {
           {desc:'Cidadania JA (parc 5/10)',valor:850.00},
           {desc:'Jim.com Luciane (2 parc)',valor:350.34},
           {desc:'EC 4Produtos (parc 5/12)',valor:109.57},
-          {desc:'Cassol',valor:24.90}
+          {desc:'Cassol',valor:24.90},
+          {desc:'Antunes Comercio (parc 3/10)',valor:924.8},
+          {desc:'AgenciaEros (parc 5/8)',valor:777.5},
+          {desc:'Lojas Colombo (2 parc)',valor:296.0},
+          {desc:'Amazon Marketplace (varios)',valor:436.49}
         ]
       },
       {
         nome: 'Vestuário',
         icon: '👗',
-        valor: 6060.00,
+        valor: 1213.26,
         cor: '#a78bfa',
-        itens: [
-          {desc:'Amazon Samsung Galaxy (2 parc)',valor:4549.00},
-          {desc:'Lojas Colombo (2 parc)',valor:296.00},
-          {desc:'Elegancia Di (2 parc)',valor:253.30},
+        itens: [{desc:'Elegancia Di (2 parc)',valor:253.30},
           {desc:'PayU Adidas (2 parc)',valor:260.16},
           {desc:'Sephora Camb (2 parc)',valor:179.00},
           {desc:'MR Comercio (parc 3/3)',valor:108.34},
           {desc:'00110 SH Camboriu (2 parc)',valor:129.80},
           {desc:'Milon Shoppi',valor:139.41},
           {desc:'Schutz (parc 9/9)',valor:103.35},
-          {desc:'00006 SH Joinville',valor:39.90}
-        ]
+          {desc:'00006 SH Joinville',valor:39.90}]
       },
       {
         nome: 'Saude',
         icon: '💊',
-        valor: 1270.00,
+        valor: 1207.83,
         cor: '#f87171',
         itens: [
           {desc:'DVA Pneus (parc 1/6 e 2/6)',valor:516.70},
@@ -1805,7 +2448,7 @@ var faturas = {
       {
         nome: 'Transporte',
         icon: '🚗',
-        valor: 1840.00,
+        valor: 2015.14,
         cor: '#fbbf24',
         itens: [
           {desc:'Posto Rudnic (6x)',valor:763.46},
@@ -1819,12 +2462,9 @@ var faturas = {
       {
         nome: 'Diversos',
         icon: '📦',
-        valor: 2000.00,
+        valor: 1910.71,
         cor: '#9a9690',
-        itens: [
-          {desc:'ZP Maeara 2a parc (extra)',valor:0},
-          {desc:'Amazon Marketplace (varios)',valor:436.49},
-          {desc:'MLP Epoca Cosmeti (2 parc)',valor:390.42},
+        itens: [{desc:'MLP Epoca Cosmeti (2 parc)',valor:390.42},
           {desc:'App LGAuthentic (2 parc)',valor:202.86},
           {desc:'Amazon JCMNI (2 parc)',valor:338.78},
           {desc:'MercadoLivre (2 parc)',valor:173.90},
@@ -1834,12 +2474,161 @@ var faturas = {
           {desc:'AmazonMktplc Megab (parc)',valor:166.40},
           {desc:'Fernanda Fer + Megapix',valor:81.00},
           {desc:'Gototem + DL Google',valor:74.90},
-          {desc:'VSKE Industr',valor:27.85}
-        ]
+          {desc:'VSKE Industr',valor:27.85}]
       }
-    ]
+    ,
+      {
+        nome: 'Lazer / Restaurantes',
+        icon: '🍽️',
+        valor: 1099.68,
+        cor: '#a78bfa',
+        itens: [
+          {desc:'Smania + MgGelateria (4x)',valor:135.98}
+        ,
+          {desc:'CCBS Cafeteria + Porao da Lig',valor:124.00},
+          {desc:'Risotteria de A a Z (2x)',valor:436.70},
+          {desc:'Cantina Italiana',valor:403.00}]
+      }]
   }
 };
+
+// -- CARTOES DASHBOARD DATA --
+var cartoesMeta = {
+  master_dez25:{mes:'Dez/25',mesNum:12,ano:2025,cartao:'Master Black',titular:'Jonattam',total:6130.59},
+  master_jan:  {mes:'Jan/26',mesNum:1, ano:2026,cartao:'Master Black',titular:'Jonattam',total:9939.48},
+  master_fev:  {mes:'Fev/26',mesNum:2, ano:2026,cartao:'Master Black',titular:'Jonattam',total:5819.69},
+  master_abr:  {mes:'Abr/26',mesNum:4, ano:2026,cartao:'Master Black',titular:'Jonattam / Alessandra',total:6474.32},
+  visa_dez25:  {mes:'Dez/25',mesNum:12,ano:2025,cartao:'Visa Infinite',titular:'Jonattam / Alessandra',total:24062.29},
+  visa_jan:    {mes:'Jan/26',mesNum:1, ano:2026,cartao:'Visa Infinite',titular:'Jonattam / Alessandra',total:13362.49},
+  visa_fev:    {mes:'Fev/26',mesNum:2, ano:2026,cartao:'Visa Infinite',titular:'Jonattam / Alessandra',total:29344.37},
+  visa_abr:    {mes:'Abr/26',mesNum:4, ano:2026,cartao:'Visa Infinite',titular:'Jonattam / Alessandra',total:28226.06}
+};
+
+// Category normalization map
+var catNorm = {
+  'Alimentação / Mercado':'Alimentação',
+  'Alimentação':'Alimentação',
+  'Cruzeiro — Royal Caribbean (inter)':'Turismo',
+  'Turismo / Lazer':'Turismo',
+  'Turismo — Cruzeiro (pre-embarque)':'Turismo',
+  'Turismo — Viagem EUA (pre-viagem)':'Turismo',
+  'Viagem EUA — Compras / Lazer':'Turismo',
+  'Turismo / Nacional':'Turismo',
+  'Turismo / Hobbies':'Turismo',
+  'Turismo':'Turismo',
+  'Moradia / Casa':'Moradia',
+  'Moradia':'Moradia',
+  'Vestuário':'Vestuário',
+  'Vestuário — EUA (inter)':'Vestuário',
+  'Saúde':'Saúde',
+  'Saude':'Saúde',
+  'Transporte':'Transporte',
+  'Transporte / Seguros':'Transporte',
+  'Lazer':'Lazer',
+  'Lazer / Assinaturas':'Lazer',
+  'Lazer / Hobby':'Lazer',
+  'Lazer / Restaurantes':'Lazer',
+  'Assinaturas / Diversos':'Diversos',
+  'Diversos':'Diversos'
+};
+
+function getCartData(filtMes, filtCartao, filtTitular) {
+  var keys = Object.keys(faturas);
+  var catTotals = {};
+  var cardTotals = {};
+  var mesTotals = {};
+  var titTotals = {};
+  var totalGeral = 0;
+  var parceladas = [];
+  
+  keys.forEach(function(key) {
+    var meta = cartoesMeta[key];
+    if (!meta) return;
+    if (filtMes && filtMes !== 'todos' && meta.mes !== filtMes) return;
+    if (filtCartao && filtCartao !== 'todos' && meta.cartao !== filtCartao) return;
+    if (filtTitular && filtTitular !== 'todos' && meta.titular !== filtTitular) return;
+    
+    totalGeral += meta.total;
+    cardTotals[meta.cartao] = (cardTotals[meta.cartao] || 0) + meta.total;
+    titTotals[meta.titular] = (titTotals[meta.titular] || 0) + meta.total;
+    mesTotals[meta.mes] = (mesTotals[meta.mes] || 0) + meta.total;
+    
+    var fat = faturas[key];
+    if (!fat || !fat.categorias) return;
+    fat.categorias.forEach(function(cat) {
+      var norm = catNorm[cat.nome] || 'Diversos';
+      catTotals[norm] = (catTotals[norm] || 0) + cat.valor;
+      // Track parceladas
+      cat.itens.forEach(function(it) {
+        if (it.desc && /parc|inter\)|01\/|02\/|03\/|04\/|05\/|06\/|07\/|08\/|09\/|10\//.test(it.desc)) {
+          parceladas.push({fat:key, cat:norm, desc:it.desc, valor:it.valor, mes:meta.mes, cartao:meta.cartao});
+        }
+      });
+    });
+  });
+  
+  return {catTotals:catTotals, cardTotals:cardTotals, mesTotals:mesTotals, 
+          titTotals:titTotals, totalGeral:totalGeral, parceladas:parceladas};
+}
+
+function renderCartoes() {
+  var filtMes = document.getElementById('cart-mes').value;
+  var filtCartao = document.getElementById('cart-cartao').value;
+  var filtTitular = document.getElementById('cart-titular').value;
+  var filtParc = document.getElementById('cart-parc').value;
+  
+  var d = getCartData(filtMes, filtCartao, filtTitular);
+  
+  // Summary bar
+  document.getElementById('cart-total').textContent = 'R$ ' + d.totalGeral.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  
+  // Category breakdown
+  var cats = Object.entries(d.catTotals).sort(function(a,b){return b[1]-a[1];});
+  var catColors = {
+    'Alimentação':'#4ade80','Turismo':'#f97316','Moradia':'#60a5fa',
+    'Vestuário':'#a78bfa','Saúde':'#f87171','Transporte':'#fbbf24',
+    'Lazer':'#e879f9','Diversos':'#9a9690'
+  };
+  
+  var catHtml = cats.map(function(c) {
+    var pct = d.totalGeral > 0 ? (c[1]/d.totalGeral*100).toFixed(1) : 0;
+    var col = catColors[c[0]] || '#9a9690';
+    return '<div class="cart-cat-row">'+
+      '<div class="cart-cat-label"><span class="cart-dot" style="background:'+col+'"></span><span>'+c[0]+'</span></div>'+
+      '<div class="cart-cat-bar-wrap"><div class="cart-cat-bar" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+      '<div class="cart-cat-vals"><span class="cart-cat-pct">'+pct+'%</span><span class="cart-cat-val">R$ '+c[1].toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})+'</span></div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('cart-cats').innerHTML = catHtml || '<div style="color:var(--text3);padding:16px;text-align:center">Nenhum dado</div>';
+  
+  // Card comparison
+  var cards = Object.entries(d.cardTotals).sort(function(a,b){return b[1]-a[1];});
+  var cardHtml = cards.map(function(c) {
+    var pct = d.totalGeral > 0 ? (c[1]/d.totalGeral*100).toFixed(1) : 0;
+    var col = c[0] === 'Visa Infinite' ? '#60a5fa' : '#fbbf24';
+    return '<div class="cart-card-item">'+
+      '<div class="cart-card-name">'+c[0]+'</div>'+
+      '<div class="cart-card-bar-wrap"><div class="cart-cat-bar" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+      '<span class="cart-cat-val">R$ '+c[1].toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})+'</span>'+
+    '</div>';
+  }).join('');
+  document.getElementById('cart-cards').innerHTML = cardHtml || '<span style="color:var(--text3)">—</span>';
+  
+  // Parceladas
+  var parc = d.parceladas;
+  if (filtParc === 'parc') {
+    parc = parc.filter(function(p){return /parc/.test(p.desc);});
+  } else if (filtParc === 'inter') {
+    parc = parc.filter(function(p){return /inter\)/.test(p.desc);});
+  }
+  parc = parc.sort(function(a,b){return b.valor-a.valor;}).slice(0,30);
+  
+  var parcHtml = parc.length ? '<table class="cart-parc-table"><thead><tr><th>Mês</th><th>Cartão</th><th>Categoria</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead><tbody>'+
+    parc.map(function(p){
+      return '<tr><td>'+p.mes+'</td><td>'+p.cartao+'</td><td>'+p.cat+'</td><td class="cart-parc-desc">'+p.desc+'</td><td style="text-align:right;font-family:DM Mono,monospace;font-size:10px">R$ '+p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td></tr>';
+    }).join('')+'</tbody></table>' : '<div style="color:var(--text3);padding:16px;text-align:center">Nenhuma compra parcelada</div>';
+  document.getElementById('cart-parceladas').innerHTML = parcHtml;
+}
 
 function handleFatClick(e){
   var el=e.target.closest('[data-fat]');
