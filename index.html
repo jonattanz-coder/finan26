@@ -99,9 +99,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .ph p{color:var(--text2);font-size:12px;margin-top:3px;}
 
 /* METRIC CARDS */
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.metrics{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
 .metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
-.metric-2{padding:12px 14px;}
+.metric-2{padding:12px 14px;width:100%;box-sizing:border-box;}
 .metric-row{display:flex;align-items:center;gap:8px;margin:8px 0 4px;}
 .metric-div{width:1px;height:28px;background:var(--border);flex-shrink:0;}
 .metric-sublbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;}
@@ -329,15 +329,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 .cart-parc-table{width:100%;border-collapse:collapse;}
 .cart-parc-table th{background:var(--bg3);padding:6px 8px;text-align:left;font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);}
 .cart-parc-table td{padding:6px 8px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);}
-.cart-parc-desc{color:var(--text);font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cart-parc-desc{color:var(--text);font-size:10px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cart-parc-total{background:var(--bg3);border-bottom:1px solid var(--border);padding:8px 12px;font-size:11px;color:var(--text3);}
-.cart-mensal-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 12px 8px;}
-.cart-mensal-bars{display:flex;align-items:flex-end;gap:6px;height:120px;}
-.cart-mensal-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;}
-.cart-mensal-val{font-family:'DM Mono',monospace;font-size:8px;color:var(--amber);text-align:center;white-space:nowrap;}
+.cart-mensal-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 8px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.cart-mensal-bars{display:flex;align-items:flex-end;gap:4px;height:110px;min-width:320px;}
+.cart-mensal-col{width:36px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;}
+.cart-mensal-val{font-family:'DM Mono',monospace;font-size:7.5px;color:var(--amber);text-align:center;white-space:nowrap;line-height:1.2;}
 .cart-mensal-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end;}
 .cart-mensal-bar{width:100%;background:var(--amber);border-radius:2px 2px 0 0;min-height:2px;transition:height .4s;}
-.cart-mensal-label{font-size:8px;color:var(--text3);text-align:center;white-space:nowrap;}
+.cart-mensal-label{font-size:7.5px;color:var(--text3);text-align:center;white-space:nowrap;}
 
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px;}
@@ -395,12 +395,12 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
           <div class="metric-row">
             <div>
               <div class="metric-sublbl">Hoje</div>
-              <div class="metric-val-sm">R$ 8.065</div>
+              <div class="metric-val-sm">R$ 8.738</div>
             </div>
             <div class="metric-div"></div>
             <div>
               <div class="metric-sublbl">Fim de Abr</div>
-              <div class="metric-val-sm">R$ 20.103</div>
+              <div class="metric-val-sm">R$ 19.703</div>
             </div>
             <div class="metric-div"></div>
             <div>
@@ -408,7 +408,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
               <div class="metric-val-sm">R$ 40.591</div>
             </div>
           </div>
-          <div class="metric-sub down">▼ R$ 6.783 resultado abr</div>
+          <div class="metric-sub down">▼ R$ 7.183 resultado abr</div>
         </div>
 
         <div class="metric metric-2">
@@ -491,12 +491,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
         <div class="cc-sub">Positivo = sobra · Negativo = déficit</div>
         <div style="position:relative;width:100%;height:180px"><canvas id="resultChart"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="cc-title">Receita vs Despesa</div>
-        <div class="cc-sub">Comparativo mensal</div>
-        <div class="legend"><span><span class="leg" style="background:#60a5fa"></span>Receita</span><span><span class="leg" style="background:#f87171"></span>Despesa</span></div>
-        <div style="position:relative;width:100%;height:180px"><canvas id="recDespChart"></canvas></div>
-      </div>
+
       <div class="chart-card">
         <div class="cc-title">Investimentos acumulados</div>
         <div class="cc-sub">Composição dos cofres</div>
@@ -512,14 +507,38 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-s
 
       <div class="inv-table-wrap">
         <table class="inv-table">
-          <thead><tr><th>Investimento</th><th>Valor</th><th>%</th></tr></thead>
+          <thead><tr><th>Investimento</th><th>Atual (abr)</th><th>Projeção dez</th></tr></thead>
           <tbody>
-            <tr><td>Cofre Uni</td><td class="mono up">R$ 60.000</td><td class="mono">50%</td></tr>
-            <tr><td>Cofre Prev</td><td class="mono up">R$ 30.000</td><td class="mono">25%</td></tr>
-            <tr><td>Finan. Caixa</td><td class="mono">R$ 18.596</td><td class="mono">15,5%</td></tr>
-            <tr><td>Cofre 15y</td><td class="mono">R$ 10.000</td><td class="mono">8,3%</td></tr>
-            <tr><td>VGBL Sarah</td><td class="mono">R$ 1.500</td><td class="mono">1,2%</td></tr>
-            <tr><td>Total</td><td class="mono up">R$ 120.096</td><td class="mono">100%</td></tr>
+            <tr>
+              <td>Cofre Uni</td>
+              <td class="mono">R$ 25.000</td>
+              <td class="mono up">R$ 60.000</td>
+            </tr>
+            <tr>
+              <td>Cofre Prev</td>
+              <td class="mono">R$ 12.500</td>
+              <td class="mono up">R$ 30.000</td>
+            </tr>
+            <tr>
+              <td>Finan. Caixa</td>
+              <td class="mono">R$ 6.185</td>
+              <td class="mono up">R$ 18.596</td>
+            </tr>
+            <tr>
+              <td>Cofre 15y</td>
+              <td class="mono">R$ 3.000</td>
+              <td class="mono up">R$ 10.000</td>
+            </tr>
+            <tr>
+              <td>VGBL Sarah</td>
+              <td class="mono">R$ 500</td>
+              <td class="mono up">R$ 1.500</td>
+            </tr>
+            <tr class="inv-total">
+              <td><strong>Total</strong></td>
+              <td class="mono"><strong>R$ 47.185</strong></td>
+              <td class="mono up"><strong>R$ 120.096</strong></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1172,7 +1191,7 @@ var mesesInfo={
   jan:{nome:'Janeiro',realizado:true,receita:75718,despesa:44150.84,saldo:31567.17,resultado:31567.17},
   fev:{nome:'Fevereiro',realizado:true,receita:28492,despesa:41976.12,saldo:18083.05,resultado:-13484.12},
   mar:{nome:'Março',realizado:true,receita:97268,despesa:88463.46,saldo:26887.59,resultado:8804.54},
-  abr:{nome:'Abril',realizado:true,receita:40346,despesa:47129,saldo:20103.2,resultado:-6783},
+  abr:{nome:'Abril',realizado:true,receita:39946,despesa:47129,saldo:19703.2,resultado:-7183},
   mai:{nome:'Maio',realizado:false,receita:36423,despesa:38170,saldo:17956.2,resultado:-1747},
   jun:{nome:'Junho',realizado:false,receita:37373,despesa:34468,saldo:20861.2,resultado:2905},
   jul:{nome:'Julho',realizado:false,receita:35373,despesa:33318,saldo:22916.2,resultado:2055},
@@ -1373,14 +1392,15 @@ var lancamentos={
     {data:'12/abr',motivo:'Agua - Royal',forma:'boleto',receita:0,despesa:168,status:'Pago',saldo:-6641.8},
     {data:'15/abr',motivo:'Nstech - adiantamento',forma:'conta',receita:14910,despesa:0,status:'Pago',saldo:8268.2},
     {data:'15/abr',motivo:'Passeio Bonja',forma:'conta',receita:0,despesa:203,status:'Pago',saldo:8065.2},
-    {data:'16/abr',motivo:'Aluguel',forma:'conta',receita:1363,despesa:0,status:'Agendado',saldo:9428.2},
-    {data:'16/abr',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:9578.2},
-    {data:'20/abr',motivo:'Jardim',forma:'conta',receita:0,despesa:130,status:'Previsto',saldo:9448.2},
-    {data:'20/abr',motivo:'Purpurata - adiant.',forma:'conta',receita:2000,despesa:0,status:'Previsto',saldo:11448.2},
-    {data:'20/abr',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:11423.2},
-    {data:'27/abr',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:14823.2},
-    {data:'30/abr',motivo:'Diarista',forma:'conta',receita:0,despesa:870,status:'Previsto',saldo:13953.2},
-    {data:'30/abr',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:20103.2}
+    {data:'16/abr',motivo:'Aluguel',forma:'conta',receita:963,despesa:0,status:'Pago',saldo:9028.2},
+    {data:'16/abr',motivo:'Diarista',forma:'conta',receita:0,despesa:290,status:'Pago',saldo:8738.2},
+    {data:'16/abr',motivo:'Pix samela celular',forma:'pix',receita:150,despesa:0,status:'Previsto',saldo:8888.2},
+    {data:'20/abr',motivo:'Jardim',forma:'conta',receita:0,despesa:130,status:'Previsto',saldo:8758.2},
+    {data:'20/abr',motivo:'Purpurata - adiant.',forma:'conta',receita:2000,despesa:0,status:'Previsto',saldo:10758.2},
+    {data:'20/abr',motivo:'Cartao Seguro',forma:'conta',receita:0,despesa:25,status:'Previsto',saldo:10733.2},
+    {data:'27/abr',motivo:'Telecom',forma:'conta',receita:3400,despesa:0,status:'Previsto',saldo:14133.2},
+    {data:'30/abr',motivo:'Diarista',forma:'conta',receita:0,despesa:580,status:'Previsto',saldo:13553.2},
+    {data:'30/abr',motivo:'Nstech - salario',forma:'conta',receita:6150,despesa:0,status:'Previsto',saldo:19703.2}
   ],
 
   mai:[
@@ -1774,39 +1794,7 @@ function renderMesHl(mes){
 }
 
 // -- CHARTS ----------------------------------------
-function buildCharts(){
-  var meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  var real=[true,true,true,true,false,false,false,false,false,false,false,false];
-  var saldos=[31567,18083,26888,20103,17956,20861,22916,26171,31376,34531,37386,40591];
-  var resultados=[31567,-13484,8805,-6783,-1747,2905,2055,3255,5205,3155,2855,3205];
-  var receitas=[75718,28492,97268,40346,36423,37373,35373,35373,35373,35373,57873,46873];
-  var despesas=[44150,41976,88463,47129,38170,34468,33318,32118,30168,32218,55018,43668];
-  var finC=[1545,3086,4637,6188,7739,9290,10841,12392,13943,15494,17045,18596];
-  var vgbl=[125,250,375,500,625,750,875,1000,1125,1250,1375,1500];
-  var cofU=[0,0,25000,25000,25000,25000,27000,29000,31000,33000,46000,60000];
-  var cofP=[0,0,12500,12500,12500,12500,13500,14500,15500,16500,23500,30000];
-  var cof15=[0,0,3000,3000,3000,3000,3500,4000,4500,5000,6500,10000];
-  var invT=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];
-  var gc='rgba(255,255,255,0.05)';
-  var tf={family:'DM Mono',size:9};
-  var fk=function(v){return 'R$'+(v/1000).toFixed(0)+'k';};
-  var tt={backgroundColor:'#1e1e1e',titleColor:'#f0ede8',bodyColor:'#9a9690',borderColor:'rgba(255,255,255,0.1)',borderWidth:1};
-  var bscale={y:{ticks:{callback:fk,font:tf,color:'#5a5753'},grid:{color:gc},border:{display:false}},x:{ticks:{font:tf,color:'#5a5753',autoSkip:false,maxRotation:0},grid:{display:false},border:{display:false}}};
 
-  var dlPlugin={id:'customLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.textAlign='center';ctx.textBaseline='bottom';chart.data.datasets.forEach(function(ds,di){var meta=chart.getDatasetMeta(di);if(meta.hidden)return;meta.data.forEach(function(pt,i){var val=ds.data[i];if(!val&&val!==0)return;ctx.fillStyle=ds.datalabelColor||'rgba(240,237,232,0.75)';ctx.fillText(fk(val),pt.x,pt.y-3);});});ctx.restore();}};
-
-  new Chart(document.getElementById('saldoChart'),{type:'line',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:saldos,datalabelColor:'rgba(240,237,232,0.8)',pointBackgroundColor:saldos.map(function(_,i){return real[i]?'#4ade80':'#fbbf24';}),pointRadius:4,tension:0.35,fill:false,segment:{borderColor:function(c){return c.p0DataIndex<3?'#4ade80':'#fbbf24';},borderDash:function(c){return c.p0DataIndex<3?[]:[5,4];}}}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
-
-  new Chart(document.getElementById('resultChart'),{type:'bar',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:resultados,datalabelColor:'rgba(240,237,232,0.8)',backgroundColor:resultados.map(function(v,i){return v>=0?(real[i]?'#4ade80':'#86efac'):(real[i]?'#f87171':'#fca5a5');}),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
-
-  var rdPlugin={id:'rdLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.textAlign='center';chart.data.datasets.forEach(function(ds,di){var meta=chart.getDatasetMeta(di);if(meta.hidden)return;meta.data.forEach(function(pt,i){var val=ds.data[i];if(!val)return;ctx.fillStyle=di===0?'#93c5fd':'#fca5a5';ctx.textBaseline='bottom';ctx.fillText(fk(val),pt.x,pt.y-3);});});ctx.restore();}};
-  new Chart(document.getElementById('recDespChart'),{type:'bar',plugins:[rdPlugin],data:{labels:meses,datasets:[{data:receitas,backgroundColor:'#60a5fa',borderRadius:2,label:'Receita'},{data:despesas,backgroundColor:'#f87171',borderRadius:2,label:'Despesa'}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},rdLabels:{}},scales:bscale}});
-
-  var invPlugin={id:'invTotalLabel',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.fillStyle='rgba(240,237,232,0.85)';ctx.textAlign='center';ctx.textBaseline='bottom';var totals=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];var lastMeta=chart.getDatasetMeta(chart.data.datasets.length-1);lastMeta.data.forEach(function(pt,i){ctx.fillText(fk(totals[i]),pt.x,pt.y-3);});ctx.restore();}};
-  new Chart(document.getElementById('invChart'),{type:'bar',plugins:[invPlugin],data:{labels:meses,datasets:[{label:'Fin.',data:finC,backgroundColor:'#a78bfa'},{label:'VGBL',data:vgbl,backgroundColor:'#4ade80'},{label:'Uni',data:cofU,backgroundColor:'#60a5fa'},{label:'Prev',data:cofP,backgroundColor:'#f87171'},{label:'15y',data:cof15,backgroundColor:'#fbbf24'}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:22}},plugins:{legend:{display:false},tooltip:{callbacks:{title:function(items){return items[0].label;},label:function(c){return c.dataset.label+': '+fk(c.parsed.y);},footer:function(items){var totals=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];return 'Total: '+fk(totals[items[0].dataIndex]);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,footerColor:'#f0ede8',footerFont:{weight:'bold'},borderColor:tt.borderColor,borderWidth:1},invTotalLabel:{}},scales:{x:{stacked:true,ticks:{font:tf,color:'#5a5753',autoSkip:false,maxRotation:0},grid:{display:false},border:{display:false}},y:{stacked:true,ticks:{callback:fk,font:tf,color:'#5a5753'},grid:{color:gc},border:{display:false}}}}});
-}
-
-// -- FATURAS DATA ----------------------------------
 var faturas = {
   master_dez25: {
     titulo: 'Itaú Master Black — Dezembro 2025',
@@ -2617,6 +2605,67 @@ var faturas = {
   }
 };
 
+function buildCharts(){
+  var meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var real=[true,true,true,true,false,false,false,false,false,false,false,false];
+  var saldos=[31567,18083,26888,19703,17956,20861,22916,26171,31376,34531,37386,40591];
+  var resultados=[31567,-13484,8805,-7183,-1747,2905,2055,3255,5205,3155,2855,3205];
+  var receitas=[75718,28492,97268,39946,36423,37373,35373,35373,35373,35373,57873,46873];
+  var despesas=[44150,41976,88463,47129,38170,34468,33318,32118,30168,32218,55018,43668];
+  var finC=[1545,3086,4637,6188,7739,9290,10841,12392,13943,15494,17045,18596];
+  var vgbl=[125,250,375,500,625,750,875,1000,1125,1250,1375,1500];
+  var cofU=[0,0,25000,25000,25000,25000,27000,29000,31000,33000,46000,60000];
+  var cofP=[0,0,12500,12500,12500,12500,13500,14500,15500,16500,23500,30000];
+  var cof15=[0,0,3000,3000,3000,3000,3500,4000,4500,5000,6500,10000];
+  var invT=[1670,3336,45512,47188,48864,50540,55716,60892,66068,71244,94420,120096];
+  var gc='rgba(255,255,255,0.05)';
+  var tf={family:'DM Mono',size:9};
+  var fk=function(v){return 'R$'+(v/1000).toFixed(0)+'k';};
+  var tt={backgroundColor:'#1e1e1e',titleColor:'#f0ede8',bodyColor:'#9a9690',borderColor:'rgba(255,255,255,0.1)',borderWidth:1};
+  var bscale={y:{ticks:{callback:fk,font:tf,color:'#5a5753'},grid:{color:gc},border:{display:false}},x:{ticks:{font:tf,color:'#5a5753',autoSkip:false,maxRotation:0},grid:{display:false},border:{display:false}}};
+
+  var dlPlugin={id:'customLabels',afterDatasetsDraw:function(chart){var ctx=chart.ctx;ctx.save();ctx.font='bold 8px DM Mono,monospace';ctx.textAlign='center';ctx.textBaseline='bottom';chart.data.datasets.forEach(function(ds,di){var meta=chart.getDatasetMeta(di);if(meta.hidden)return;meta.data.forEach(function(pt,i){var val=ds.data[i];if(!val&&val!==0)return;ctx.fillStyle=ds.datalabelColor||'rgba(240,237,232,0.75)';ctx.fillText(fk(val),pt.x,pt.y-3);});});ctx.restore();}};
+
+  new Chart(document.getElementById('saldoChart'),{type:'line',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:saldos,datalabelColor:'rgba(240,237,232,0.8)',pointBackgroundColor:saldos.map(function(_,i){return real[i]?'#4ade80':'#fbbf24';}),pointRadius:4,tension:0.35,fill:false,segment:{borderColor:function(c){return c.p0DataIndex<3?'#4ade80':'#fbbf24';},borderDash:function(c){return c.p0DataIndex<3?[]:[5,4];}}}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
+
+  new Chart(document.getElementById('resultChart'),{type:'bar',plugins:[dlPlugin],data:{labels:meses,datasets:[{data:resultados,datalabelColor:'rgba(240,237,232,0.8)',backgroundColor:resultados.map(function(v,i){return v>=0?(real[i]?'#4ade80':'#86efac'):(real[i]?'#f87171':'#fca5a5');}),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fk(c.parsed.y);}},backgroundColor:tt.backgroundColor,titleColor:tt.titleColor,bodyColor:tt.bodyColor,borderColor:tt.borderColor,borderWidth:1},customLabels:{}},scales:bscale}});
+
+// -- FATURAS DATA ----------------------------------
+
+
+  // Investimentos Acumulados
+  var invCtx = document.getElementById('invChart');
+  if(invCtx) {
+    var invLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var invUni    = [0,0,25000,25000,27000,29000,31000,33000,35000,37000,50000,64000];
+    var invPrev   = [0,0,12500,12500,13500,14500,15500,16500,17500,18500,25500,32000];
+    var invFin    = [1545,3086,4637,6185,7736,9287,10838,12389,13940,15491,17042,18596];
+    var inv15y    = [0,0,3000,3000,3500,4000,4500,5000,5500,6000,7500,10000];
+    var invVgbl   = [125,250,375,500,625,750,875,1000,1125,1250,1375,1500];
+    new Chart(invCtx, {
+      type:'bar',
+      data:{
+        labels:invLabels,
+        datasets:[
+          {label:'Cofre Uni',   data:invUni,  backgroundColor:'#60a5fa', stack:'inv'},
+          {label:'Cofre Prev',  data:invPrev, backgroundColor:'#4ade80', stack:'inv'},
+          {label:'Finan. Caixa',data:invFin,  backgroundColor:'#a78bfa', stack:'inv'},
+          {label:'Cofre 15y',   data:inv15y,  backgroundColor:'#fbbf24', stack:'inv'},
+          {label:'VGBL Sarah',  data:invVgbl, backgroundColor:'#f87171', stack:'inv'}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{ticks:{color:'#9a9690',font:{size:9}},grid:{color:'rgba(255,255,255,0.04)'}},
+          y:{ticks:{color:'#9a9690',font:{size:9},callback:function(v){return 'R$'+(v/1000).toFixed(0)+'k';}},grid:{color:'rgba(255,255,255,0.06)'},stacked:true}
+        }
+      }
+    });
+  }
+}
+
 // -- CARTOES DASHBOARD DATA --
 var cartoesMeta = {
   master_dez25:{mes:'Jan/26',mesNum:1, ano:2026,cartao:'Master Black',titular:'Jonattam',           total:6130.59, comprasEm:'Dez/25',venc:'05/01/2026'},
@@ -2698,9 +2747,54 @@ function getCartData(filtMes, filtCartao, filtTitular) {
 
 
 var parcMensalData = {
-  labels: ['Mai/26','Jun/26','Jul/26','Ago/26','Set/26','Out/26','Nov/26','Dez/26'],
-  valores: [11599.25,10636.74,10246.44,9468.94,6556.53,5189.83,3020.61,1388.72]
+  labels: ['Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+  valores: [16922.09,10424.3,9900.76,9123.26,6634.74,5187.12,4883.25,1311.45]
 };
+
+
+var parceladasData=[
+  {desc:'Decolar',cartao:'Visa Infinite',cur:4,total:12,rem:8,parcela:828.14,restante:6625.12},
+  {desc:'Antunes Comercio',cartao:'Visa Infinite',cur:3,total:10,rem:7,parcela:924.8,restante:6473.6},
+  {desc:'Royal Caribbean',cartao:'Master Black',cur:6,total:10,rem:4,parcela:1453.71,restante:5814.84},
+  {desc:'Decolar (hotel)',cartao:'Visa Infinite',cur:3,total:10,rem:7,parcela:693.42,restante:4853.94},
+  {desc:'Cidadania JA',cartao:'Visa Infinite',cur:5,total:10,rem:5,parcela:850.0,restante:4250.0},
+  {desc:'Jim.com Marmoraria',cartao:'Visa Infinite',cur:1,total:8,rem:7,parcela:575.0,restante:4025.0},
+  {desc:'Angeloni SUP-CT',cartao:'Master Black',cur:1,total:8,rem:7,parcela:464.75,restante:3253.25},
+  {desc:'Sempre Samsung',cartao:'Visa Infinite',cur:3,total:21,rem:18,parcela:144.9,restante:2608.2},
+  {desc:'LATAM AIR (voo 1)',cartao:'Visa Infinite',cur:6,total:10,rem:4,parcela:583.96,restante:2335.84},
+  {desc:'AgenciaEros',cartao:'Visa Infinite',cur:5,total:8,rem:3,parcela:777.5,restante:2332.5},
+  {desc:'Amazon Samsung',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:2274.5,restante:2274.5},
+  {desc:'Decolar (taxa)',cartao:'Visa Infinite',cur:3,total:10,rem:7,parcela:316.78,restante:2217.46},
+  {desc:'ZP Maeara',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:2000.0,restante:2000.0},
+  {desc:'Tokio Marine Auto',cartao:'Master Black',cur:1,total:10,rem:9,parcela:220.78,restante:1987.02},
+  {desc:'ItauShop',cartao:'Visa Infinite',cur:5,total:12,rem:7,parcela:194.9,restante:1364.3},
+  {desc:'Academia Ritmo',cartao:'Master Black',cur:5,total:12,rem:7,parcela:189.8,restante:1328.6},
+  {desc:'DVA Pneus',cartao:'Visa Infinite',cur:1,total:6,rem:5,parcela:258.35,restante:1291.75},
+  {desc:'AMAZN JCMNI',cartao:'Visa Infinite',cur:6,total:12,rem:6,parcela:195.21,restante:1171.26},
+  {desc:'Amazon YLPA',cartao:'Visa Infinite',cur:1,total:9,rem:8,parcela:117.63,restante:941.04},
+  {desc:'Electrolux',cartao:'Visa Infinite',cur:9,total:10,rem:1,parcela:869.3,restante:869.3},
+  {desc:'MLP Epoca Cosmeti',cartao:'Visa Infinite',cur:6,total:10,rem:4,parcela:195.21,restante:780.84},
+  {desc:'PG Leroy Merlin',cartao:'Visa Infinite',cur:6,total:8,rem:2,parcela:390.3,restante:780.6},
+  {desc:'EC 4Produtos',cartao:'Visa Infinite',cur:5,total:12,rem:7,parcela:109.57,restante:766.99},
+  {desc:'Lojas Colombo',cartao:'Visa Infinite',cur:5,total:10,rem:5,parcela:148.0,restante:740.0},
+  {desc:'App 1Galup',cartao:'Visa Infinite',cur:2,total:9,rem:7,parcela:102.78,restante:719.46},
+  {desc:'LATAM AIR (voo 2)',cartao:'Visa Infinite',cur:6,total:10,rem:4,parcela:153.96,restante:615.84},
+  {desc:'Amazon BR',cartao:'Visa Infinite',cur:1,total:6,rem:5,parcela:104.32,restante:521.6},
+  {desc:'AutoBarigui',cartao:'Visa Infinite',cur:3,total:4,rem:1,parcela:455.5,restante:455.5},
+  {desc:'Mercadolivre',cartao:'Visa Infinite',cur:5,total:10,rem:5,parcela:86.95,restante:434.75},
+  {desc:'Decathlon',cartao:'Visa Infinite',cur:2,total:6,rem:4,parcela:101.68,restante:406.72},
+  {desc:'Amazon Mktp (1)',cartao:'Visa Infinite',cur:2,total:8,rem:6,parcela:54.33,restante:325.98},
+  {desc:'Amazon Mktp (2)',cartao:'Visa Infinite',cur:2,total:8,rem:6,parcela:54.33,restante:325.98},
+  {desc:'AEA Join',cartao:'Visa Infinite',cur:1,total:3,rem:2,parcela:133.24,restante:266.48},
+  {desc:'PayU Adidas',cartao:'Visa Infinite',cur:9,total:10,rem:1,parcela:195.21,restante:195.21},
+  {desc:'Despachante',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:175.17,restante:175.17},
+  {desc:'Amazon Ciruro',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:117.63,restante:117.63},
+  {desc:'Jim.com Luciane',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:95.68,restante:95.68},
+  {desc:'Centauro',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:95.0,restante:95.0},
+  {desc:'Centauro (2)',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:90.0,restante:90.0},
+  {desc:'Sephora Camb',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:64.9,restante:64.9},
+  {desc:'SH Camboriu',cartao:'Visa Infinite',cur:1,total:2,rem:1,parcela:64.9,restante:64.9}
+];
 
 function renderCartoes() {
   var filtMes = document.getElementById('cart-mes').value;
@@ -2751,20 +2845,19 @@ function renderCartoes() {
     if(filtCartaoP && p.cartao !== filtCartaoP) return false;
     return true;
   });
-  if(filtParc === 'parc') parc2 = parc2.filter(function(p){return !/inter/.test(p.comprasEm);});
+  // sort by restante desc
+  parc2 = parc2.slice().sort(function(a,b){return b.restante - a.restante;});
   
   var totalRestante = parc2.reduce(function(s,p){return s+p.restante;},0);
   
   var parcHtml = parc2.length ?
     '<div class="cart-parc-total">Compromisso futuro total: <strong>R$ '+totalRestante.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</strong></div>'+
-    '<table class="cart-parc-table"><thead><tr><th>Cartão</th><th>Compras em</th><th>Descrição</th><th style="text-align:center">Parcelas restantes</th><th style="text-align:right">R$/parc</th><th style="text-align:right">Total restante</th></tr></thead><tbody>'+
+        '<table class="cart-parc-table"><thead><tr><th>Descrição</th><th style="text-align:center">Parc</th><th style="text-align:right">R$/parc</th><th style="text-align:right">Total</th></tr></thead><tbody>'+
     parc2.map(function(p){
       return '<tr>'+
-        '<td>'+p.cartao+'</td>'+
-        '<td style="white-space:nowrap">'+p.comprasEm+'</td>'+
         '<td class="cart-parc-desc">'+p.desc+'</td>'+
-        '<td style="text-align:center;font-family:DM Mono,monospace;font-size:10px">'+p.cur+'/'+p.total+' — faltam '+p.rem+'</td>'+
-        '<td style="text-align:right;font-family:DM Mono,monospace;font-size:10px">R$ '+p.parcela.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>'+
+        '<td style="text-align:center;font-family:DM Mono,monospace;font-size:10px">'+p.rem+'</td>'+
+        '<td style="text-align:right;font-family:DM Mono,monospace;font-size:10px">'+p.parcela.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>'+
         '<td style="text-align:right;font-family:DM Mono,monospace;font-size:10px;color:var(--amber)">R$ '+p.restante.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>'+
       '</tr>';
     }).join('')+'</tbody></table>'
@@ -2776,7 +2869,7 @@ function renderCartoes() {
   var barsHtml = parcMensalData.labels.map(function(label, i) {
     var val = parcMensalData.valores[i];
     var pct = maxVal > 0 ? (val/maxVal*100) : 0;
-    var fmtVal = 'R$ ' + val.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+    var fmtVal = 'R$ ' + (val/1000).toFixed(1).replace('.',',') + 'k';
     return '<div class="cart-mensal-col">'+
       '<div class="cart-mensal-val">'+fmtVal+'</div>'+
       '<div class="cart-mensal-bar-wrap"><div class="cart-mensal-bar" style="height:'+pct+'%"></div></div>'+
@@ -2786,40 +2879,6 @@ function renderCartoes() {
   document.getElementById('cart-mensal-bars').innerHTML = barsHtml;
 }
 
-var parceladasData=[
-  {desc:'Decolar',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:3,total:12,rem:9,parcela:828.14,restante:7453.26},
-  {desc:'Antunes Comercio',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:3,total:10,rem:7,parcela:924.8,restante:6473.6},
-  {desc:'Royal Caribbean',cartao:'Master Black',comprasEm:'Mar/26',cur:6,total:10,rem:4,parcela:1453.71,restante:5814.84},
-  {desc:'LATAM Air (2x',cartao:'Visa Infinite',comprasEm:'Jan/26',cur:4,total:10,rem:6,parcela:737.34,restante:4424.04},
-  {desc:'Cidadania JA',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:5,total:10,rem:5,parcela:850.0,restante:4250.0},
-  {desc:'Electrolux',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:6,total:10,rem:4,parcela:869.3,restante:3477.2},
-  {desc:'Angeloni - Máq. Lavar',cartao:'Master Black',comprasEm:'Mar/26',cur:2,total:8,rem:6,parcela:464.75,restante:2788.5},
-  {desc:'Sempre Samsung',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:2,total:21,rem:19,parcela:144.9,restante:2753.1},
-  {desc:'DVA Pneus e 2/6)',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:1,total:6,rem:5,parcela:516.7,restante:2583.5},
-  {desc:'AgenciaEros',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:5,total:8,rem:3,parcela:777.5,restante:2332.5},
-  {desc:'Tokio Marine Auto',cartao:'Master Black',comprasEm:'Fev/26',cur:1,total:10,rem:9,parcela:220.78,restante:1987.02},
-  {desc:'ItauShop',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:3,total:12,rem:9,parcela:194.9,restante:1754.1},
-  {desc:'MLP Epoca Cosmeti',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:3,total:10,rem:7,parcela:195.21,restante:1366.47},
-  {desc:'Amazon JCMNI',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:5,total:12,rem:7,parcela:169.39,restante:1185.73},
-  {desc:'Academia Ritmo',cartao:'Master Black',comprasEm:'Mar/26',cur:6,total:12,rem:6,parcela:189.8,restante:1138.8},
-  {desc:'Allianz Seguro',cartao:'Master Black',comprasEm:'Fev/26',cur:6,total:10,rem:4,parcela:229.37,restante:917.48},
-  {desc:'Lojas Colombo',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:4,total:10,rem:6,parcela:148.0,restante:888.0},
-  {desc:'58741783Danieli',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:3,total:4,rem:1,parcela:865.0,restante:865.0},
-  {desc:'PG Leroy Merlin',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:6,total:8,rem:2,parcela:390.3,restante:780.6},
-  {desc:'EC 4Produtos',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:5,total:12,rem:7,parcela:109.57,restante:766.99},
-  {desc:'Allianz Seguro Auto',cartao:'Master Black',comprasEm:'Mar/26',cur:7,total:10,rem:3,parcela:229.37,restante:688.11},
-  {desc:'Engeterme',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:2,total:3,rem:1,parcela:666.68,restante:666.68},
-  {desc:'PayU Adidas',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:5,total:10,rem:5,parcela:130.08,restante:650.4},
-  {desc:'AutoBarigui',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:3,total:4,rem:1,parcela:455.5,restante:455.5},
-  {desc:'Decathlon',cartao:'Visa Infinite',comprasEm:'Mar/26',cur:2,total:6,rem:4,parcela:101.68,restante:406.72},
-  {desc:'Alles Bike',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:9,total:10,rem:1,parcela:319.0,restante:319.0},
-  {desc:'Schutz',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:6,total:9,rem:3,parcela:103.35,restante:310.05},
-  {desc:'MR Comercio e 1/2)',cartao:'Visa Infinite',comprasEm:'Jan/26',cur:1,total:3,rem:2,parcela:150.79,restante:301.58},
-  {desc:'Farmafran',cartao:'Visa Infinite',comprasEm:'Jan/26',cur:1,total:2,rem:1,parcela:124.45,restante:124.45},
-  {desc:'PG Drogaraia',cartao:'Visa Infinite',comprasEm:'Dez/25',cur:5,total:6,rem:1,parcela:115.33,restante:115.33},
-  {desc:'Centauro CE1',cartao:'Visa Infinite',comprasEm:'Fev/26',cur:3,total:4,rem:1,parcela:97.51,restante:97.51},
-  {desc:'Livraria Vir',cartao:'Visa Infinite',comprasEm:'Jan/26',cur:1,total:2,rem:1,parcela:89.9,restante:89.9}
-];
 function handleFatClick(e){
   var el=e.target.closest('[data-fat]');
   if(el) openFatura(el.getAttribute('data-fat'));
